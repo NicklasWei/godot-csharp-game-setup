@@ -57,7 +57,8 @@ Keep these unless an ADR says otherwise; they cost little and pay off in every g
 
 ## 4. Retrofitting an existing Godot C# project
 
-When the user wants an existing project brought up to this standard, don't scaffold over it. Instead, in this order,
+When the user wants an existing project brought up to this standard, don't scaffold over it (`--overwrite` is for a
+fresh project the editor just created, not for a codebase with its own C#, csproj and settings). Instead, in this order,
 one reviewable change at a time:
 
 1. **Pin the toolchain:** `global.json`, `Directory.Build.props` (start with `TreatWarningsAsErrors` off, then fix
