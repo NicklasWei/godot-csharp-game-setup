@@ -70,7 +70,7 @@ import script plus tests, not by memory. -->
 Budgets are for the minimum-spec target at its native resolution.
 
 | Budget | Value |
-|---|---|
+| --- | --- |
 | Frame rate | <!-- e.g. 60 fps --> |
 | GPU frame time | <!-- ms --> |
 | Main-thread CPU frame time | <!-- ms --> |

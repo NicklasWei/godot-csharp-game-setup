@@ -25,7 +25,7 @@ GDD §17 (open questions).
 **Needed before scaffolding** (they become scaffold arguments or files):
 
 | Question | Why it matters | Default if the user has no preference |
-|---|---|---|
+| --- | --- | --- |
 | Working title, and a PascalCase identifier | Assembly, namespaces, solution name | The title without spaces |
 | Godot version | Godot.NET.Sdk version, target framework, CI download | The latest **stable** 4.x (4.5 or later); a dev build only for a needed feature |
 | Code host | CI template (GitLab or GitHub) and Pages | Ask; there's no safe default |

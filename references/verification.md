@@ -15,15 +15,19 @@ green on GitLab, but neither was run on its host from the template: watch the fi
 ```bash
 dotnet tool restore
 ```
+
 ```bash
 dotnet csharpier check .
 ```
+
 ```bash
 dotnet build <Game>.sln
 ```
+
 ```bash
 dotnet build <Game>.csproj -c ExportRelease
 ```
+
 ```bash
 dotnet test --project tests/<Game>.Core.Tests --coverlet --coverlet-output-format cobertura --coverlet-include "[<Game>.Core]*" --coverlet-threshold 85 --coverlet-threshold-type line
 ```
@@ -39,9 +43,11 @@ user's environment, so use the full path (quoted; it often contains spaces).
 ```bash
 "$GODOT_BIN" --headless --path . --import
 ```
+
 ```bash
 "$GODOT_BIN" --headless --path . --quit-after 120
 ```
+
 ```bash
 "$GODOT_BIN" --headless --path . res://tests/godot/test_runner.tscn
 ```
@@ -67,7 +73,7 @@ with no content kinds, and DocFX reporting 0 warnings and 0 errors. To look at i
 Make each change, run the gate, confirm the failure, and undo the change:
 
 | Break | Gate | Expected failure |
-|---|---|---|
+| --- | --- | --- |
 | A public class in Core with no XML docs | build | CS1591 and SA1600 |
 | `new System.Random()` in Core | build | RS0030 |
 | `GD.Print("x")` in a game script | build | RS0030 |
