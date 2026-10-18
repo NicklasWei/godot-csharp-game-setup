@@ -17,7 +17,7 @@ ADR 0008 in the template records the decision; this file is how it works and how
 ## 1. What's in it and where each page comes from
 
 | Section | Page | Source of truth |
-|---|---|---|
+| --- | --- | --- |
 | Content | Overview | `ContentKinds.All`: each kind's folder, ID prefix, definition count, schema |
 | Content | One page per kind | The kind's document type (fields, JSON names and types, XML summaries), every definition rendered by reflection, its localization keys with English text |
 | Reference | Tuning | Every public Core type named `…Settings` and its static instances (`Default`, named presets), rendered by reflection |
@@ -50,6 +50,7 @@ wiki. Property summaries lose their "Gets …" prefix on the way.
 ```bash
 dotnet tool restore
 ```
+
 ```bash
 tools/wiki/build.sh --strict --serve
 ```

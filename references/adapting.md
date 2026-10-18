@@ -27,7 +27,7 @@ Keep these unless an ADR says otherwise; they cost little and pay off in every g
 ## 2. Decisions that depend on the game
 
 | Decision | Template default | When to change, and what to do |
-|---|---|---|
+| --- | --- | --- |
 | **2D or 3D** | 3D-leaning settings (Jolt for 3D physics, `Vector3` interop) | For 2D, set the stretch mode and texture filtering in `project.godot` (pixel art: `canvas_items` or `viewport` stretch, nearest filtering), keep Godot 2D physics, and drop unused interop. |
 | **Renderer** | `--renderer forward_plus` | `mobile` for mid-range or handheld targets; `gl_compatibility` for low-end, web, or many 2D games. Measure on the minimum spec (spike), record an ADR, and keep shaders working on the fallback. |
 | **Frame-rate and allocation budget** | 60 fps, 0 B per gameplay frame | A turn-based or menu-heavy game can relax 0 B/frame for non-gameplay screens; keep it for any real-time loop. Write the relaxation into Coding Standards §8 and an ADR. |
