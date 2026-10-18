@@ -81,7 +81,9 @@ Make each change, run the gate, confirm the failure, and undo the change:
 The wiki's strict checks overlap the tests on purpose (content errors, missing strings, missing docs, registry
 mismatches): the build or the tests usually fail first, and `--strict` catches whatever slips past them.
 
-Coverage: temporarily raise `--coverlet-threshold` above the reported rate and confirm the test run fails.
+Coverage: temporarily raise `--coverlet-threshold` to a whole number above the reported rate (for example `99`) and
+confirm the test run fails with exit code 14. A decimal such as `99.9` is rejected as an argument instead: the run
+reports "Zero tests ran", which proves nothing about the gate.
 
 ## 5. Remote and CI
 
