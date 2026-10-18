@@ -213,7 +213,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Scaffold a Godot 4 C# game project.")
     parser.add_argument("--name", help="Required. PascalCase identifier: assembly and namespace root, e.g. StarForge")
     parser.add_argument("--title", help="Display title, e.g. 'Star Forge' (default: the name)")
-    parser.add_argument("--dest", help="Required. Target folder; must be empty or hold only .git")
+    parser.add_argument("--dest", help="Required. Target folder; must be empty or hold only .git (see --overwrite)")
     parser.add_argument("--godot", help="Required. godot-builds release tag, e.g. 4.5.1-stable or 4.8-dev7")
     parser.add_argument("--tfm", default="net10.0", help="Target framework (default net10.0); must be >= GodotSharp's")
     parser.add_argument("--dotnet-sdk", help="Exact .NET SDK for global.json and CI (default: newest installed match)")
@@ -221,6 +221,11 @@ def main() -> None:
     parser.add_argument("--ci", choices=["gitlab", "github", "none"], default="gitlab")
     parser.add_argument("--renderer", choices=sorted(RENDERERS), default="forward_plus")
     parser.add_argument("--skip-dotnet", action="store_true", help="Skip solution creation, tool restore, and format")
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Allow a non-empty --dest: template files replace same-named files, other files are kept",
+    )
     parser.add_argument(
         "--check-template", action="store_true", help="Only check the template against its manifest (before uploading)"
     )
@@ -262,9 +267,15 @@ def main() -> None:
     renderer_feature, rendering_method = RENDERERS[args.renderer]
 
     dest = Path(args.dest).resolve()
-    if dest.exists() and any(child.name != ".git" for child in dest.iterdir()):
-        fail(f"{dest} is not empty. Scaffold into an empty folder (an initialized git repo is fine).")
+    if dest.exists() and any(child.name != ".git" for child in dest.iterdir()) and not args.overwrite:
+        fail(
+            f"{dest} is not empty. Scaffold into an empty folder (an initialized git repo is fine), "
+            "or pass --overwrite to replace same-named files and keep the rest."
+        )
     dest.mkdir(parents=True, exist_ok=True)
+    in_git_repo = (dest / ".git").exists()
+    if args.overwrite and not in_git_repo:
+        print(f"warning: {dest} is not a git repository, so replaced files can't be recovered.")
 
     tokens = {
         "__GAME__": name,
@@ -285,7 +296,8 @@ def main() -> None:
     }
 
     skipped = [path for ci, paths in CI_PATHS.items() if ci != args.ci for path in paths]
-    copied = 0
+    written: list[Path] = []
+    replaced: list[str] = []
     for source in sorted(TEMPLATE_DIR.rglob("*")):
         if not source.is_file():
             continue
@@ -298,6 +310,8 @@ def main() -> None:
         for token, value in tokens.items():
             target_relative = target_relative.replace(token, value)
         target = dest / target_relative
+        if target.exists():
+            replaced.append(target_relative)
         target.parent.mkdir(parents=True, exist_ok=True)
         text = source.read_text(encoding="utf-8")
         for token, value in tokens.items():
@@ -305,26 +319,37 @@ def main() -> None:
         target.write_text(text, encoding="utf-8", newline="")
         if target.suffix == ".sh" or target.parent.name == ".githooks":
             target.chmod(0o755)
-        copied += 1
+        written.append(target)
+    copied = len(written)
 
     english = (dest / "localization" / "en.po").read_text(encoding="utf-8")
     for locale in translated:
-        (dest / "localization" / f"{locale}.po").write_text(
-            po_for_locale(english, locale, title), encoding="utf-8", newline=""
-        )
+        catalog = dest / "localization" / f"{locale}.po"
+        if catalog.exists():
+            replaced.append(f"localization/{locale}.po")
+        catalog.write_text(po_for_locale(english, locale, title), encoding="utf-8", newline="")
+        written.append(catalog)
 
-    leftovers = []
-    for path in dest.rglob("*"):
-        if path.is_file() and ".git" not in path.relative_to(dest).parts:
-            if re.search(r"__[A-Z][A-Z_]*__", path.read_text(encoding="utf-8", errors="ignore")):
-                leftovers.append(path.relative_to(dest).as_posix())
+    # Only what the scaffold wrote: files that were already in the folder may use __WORDS__ legitimately.
+    leftovers = [
+        path.relative_to(dest).as_posix()
+        for path in written
+        if re.search(r"__[A-Z][A-Z_]*__", path.read_text(encoding="utf-8", errors="ignore"))
+    ]
     if leftovers:
         fail("Unreplaced tokens in: " + ", ".join(leftovers))
 
     print(f"Copied {copied} files and {len(translated)} translated catalogs to {dest}.")
+    if replaced:
+        print(f"Replaced {len(replaced)} existing files (other existing files were kept):")
+        for path in replaced:
+            print(f"  {path}")
+        if in_git_repo:
+            print("Review them with `git diff` and merge back any settings to keep (project.godot especially).")
 
     if not args.skip_dotnet:
-        run(["dotnet", "new", "sln", "--format", "sln", "-n", name], dest)
+        new_sln = ["dotnet", "new", "sln", "--format", "sln", "-n", name]
+        run(new_sln + (["--force"] if args.overwrite else []), dest)
         run(
             [
                 "dotnet",
@@ -341,6 +366,8 @@ def main() -> None:
         sln = dest / f"{name}.sln"
         sln.write_bytes(sln.read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n"))
         run(["dotnet", "tool", "restore"], dest)
+        if args.overwrite:
+            print("Note: CSharpier formats every C# and MSBuild file in the folder, including ones that were there.")
         run(["dotnet", "csharpier", "format", "."], dest)
 
     print()

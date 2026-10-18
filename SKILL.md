@@ -42,8 +42,10 @@ it decides tooling, structure, and quality gates, and leaves gameplay architectu
    `--godot` takes a `godotengine/godot-builds` release tag (`4.5.1-stable`, `4.8-dev7`); the script derives the
    Godot.NET.Sdk version from it. `--dotnet-sdk` defaults to the newest installed SDK matching `--tfm` (default
    `net10.0`). `--ci` is `gitlab`, `github`, or `none`; `--renderer` is `forward_plus`, `mobile`, or
-   `gl_compatibility`. It refuses a non-empty folder: if the user already created a project in the Godot editor,
-   scaffold elsewhere and move their files in afterwards. Standard library Python only. It creates the solution,
+   `gl_compatibility`. Prefer an empty folder; it refuses a non-empty one unless you pass `--overwrite`, which
+   replaces same-named files, keeps the rest, and lists what it replaced. If the user already created a project in the
+   Godot editor, commit it first, scaffold with `--overwrite`, then review `git diff` and merge their settings back
+   into `project.godot` (icon, rendering driver, physics engine, and similar). Standard library Python only. It creates the solution,
    restores the local tools, and runs CSharpier (which also sorts `using`s for the game's name).
 4. **Verify** with [references/verification.md](references/verification.md): every gate green, then each gate broken
    once on purpose and reverted. Report results faithfully, including anything you couldn't run.
