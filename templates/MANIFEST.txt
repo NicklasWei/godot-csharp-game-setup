@@ -11,6 +11,7 @@ _dot_config/dotnet-tools.json
 _dot_csharpierignore
 _dot_csharpierrc.yaml
 _dot_editorconfig
+_dot_env.example
 _dot_gitattributes
 _dot_githooks/post-checkout
 _dot_githooks/post-commit
@@ -40,6 +41,7 @@ docs/adr/0006-godot-runtime-tests-and-ci.md
 docs/adr/0007-data-driven-content.md
 docs/adr/0008-developer-wiki.md
 docs/adr/0009-deterministic-randomness.md
+docs/adr/0010-justfile-task-runner.md
 docs/adr/README.md
 game/app/AppServices.cs
 game/app/GodotClock.cs
@@ -54,6 +56,7 @@ game/l10n/LocaleService.cs
 game/ui/title/TitleScreen.cs
 game/ui/title/title_screen.tscn
 global.json
+justfile
 localization/en.po
 project.godot
 src/__GAME__.Core/Content/ContentDatabase.cs

@@ -1,0 +1,96 @@
+# Project commands (docs/CODING_STANDARDS.md §12.7, ADR 0010). Run `just` to list them.
+# Machine-specific settings such as GODOT_BIN come from a git-ignored .env (copy .env.example).
+
+set dotenv-load
+set windows-shell := ["powershell.exe", "-NoLogo", "-NoProfile", "-Command"]
+
+# List the recipes.
+default:
+    @just --list --unsorted
+
+# Restore the local .NET tools (CSharpier, DocFX).
+restore:
+    dotnet tool restore
+
+# Build every project (Debug), warnings as errors.
+build:
+    dotnet build __GAME__.sln
+
+# Build the game assembly as release exports do (no runtime tests).
+release:
+    dotnet build __GAME__.csproj -c ExportRelease
+
+# Run the Core tests.
+test:
+    dotnet test --project tests/__GAME__.Core.Tests
+
+# Run the Core tests with the 85% line-coverage gate, as CI does.
+cover:
+    dotnet test --project tests/__GAME__.Core.Tests --coverlet --coverlet-output-format cobertura --coverlet-include "[__GAME__.Core]*" --coverlet-threshold 85 --coverlet-threshold-type line
+
+# Format every C# and MSBuild file.
+format:
+    dotnet csharpier format .
+
+# Fail if anything isn't formatted, as CI does.
+format-check:
+    dotnet csharpier check .
+
+# Reimport assets headless (needed after adding files).
+godot-import: (_godot "--headless" "--path" "." "--import")
+
+# Boot the game headless for 120 frames; check the output for ERROR lines (CI fails on them).
+boot: (_godot "--headless" "--path" "." "--quit-after" "120")
+
+# Run the Godot-runtime tests; extra arguments go to the runner, e.g. just godot-test --filter=Title.
+godot-test *args: (_godot "--headless" "--path" "." "res://tests/godot/test_runner.tscn" "--" args)
+
+# Build the developer wiki with strict checks, as CI does.
+[unix]
+wiki:
+    tools/wiki/build.sh --strict
+
+# Build the developer wiki with strict checks, as CI does.
+[windows]
+wiki:
+    tools/wiki/build.ps1 -Strict
+
+# Build the wiki and serve it at http://localhost:8080.
+[unix]
+wiki-serve:
+    tools/wiki/build.sh --serve
+
+# Build the wiki and serve it at http://localhost:8080.
+[windows]
+wiki-serve:
+    tools/wiki/build.ps1 -Serve
+
+# Enable the git hooks for this clone (once per clone).
+[unix]
+hooks:
+    tools/setup-hooks.sh
+
+# Enable the git hooks for this clone (once per clone).
+[windows]
+hooks:
+    tools/setup-hooks.ps1
+
+# Run every gate in CI order.
+ci: format-check build release cover wiki godot-import boot godot-test
+
+# Runs the Godot editor binary from GODOT_BIN with the given arguments.
+[private]
+[unix]
+_godot *args: _need-godot
+    "$GODOT_BIN" {{ args }}
+
+# Runs the Godot editor binary from GODOT_BIN with the given arguments.
+[private]
+[windows]
+_godot *args: _need-godot
+    & $env:GODOT_BIN {{ args }}
+
+# Fails with a hint when GODOT_BIN isn't set.
+[private]
+_need-godot:
+    @{{ if env("GODOT_BIN", "") == "" { error("GODOT_BIN is not set: copy .env.example to .env and set it to the Godot console binary") } else { "echo Godot: " + env("GODOT_BIN", "") } }}

@@ -27,6 +27,21 @@
 
 ## Commands
 
+Routine commands are [just](https://github.com/casey/just) recipes in the root `justfile` (Standards §12.7); `just` lists them. Copy `.env.example` to `.env` and set `GODOT_BIN` there.
+
+| Recipe | Does |
+|---|---|
+| `just restore` | Restore the local tools (CSharpier, DocFX) |
+| `just build` / `just release` | Debug solution build / ExportRelease game build |
+| `just test` / `just cover` | Core tests / with the 85% coverage gate |
+| `just format` / `just format-check` | CSharpier format / check |
+| `just godot-import` / `just boot` / `just godot-test` | Headless import / boot / runtime tests (`just godot-test --filter=Name`) |
+| `just wiki` / `just wiki-serve` | Strict wiki build / serve at `http://localhost:8080` |
+| `just hooks` | Enable the git hooks once per clone |
+| `just ci` | Every gate in CI order (run before declaring work done) |
+
+The underlying commands, for reference or when `just` isn't installed:
+
 ```bash
 dotnet tool restore
 ```
@@ -49,7 +64,7 @@ Build the developer wiki with `tools/wiki/build.ps1` (or `tools/wiki/build.sh`);
 
 Enable the git hooks once per clone with `tools/setup-hooks.ps1` (or `tools/setup-hooks.sh`).
 
-Godot commands use the **console** build of the editor (on Windows, the `_console.exe`; it prints to the terminal and returns exit codes). Set `GODOT_BIN` to it. <!-- On the main dev machine: <path> -->
+Godot commands use the **console** build of the editor (on Windows, the `_console.exe`; it prints to the terminal and returns exit codes). Set `GODOT_BIN` to it (in `.env` for `just`). <!-- On the main dev machine: <path> -->
 
 ```bash
 "$GODOT_BIN" --headless --path . --import

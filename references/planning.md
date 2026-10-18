@@ -112,7 +112,7 @@ The template's plan has ten generic phases; reshape everything after Phase 1 for
   decision as a sentence.
 - Accepted ADRs are immutable: supersede with a new ADR, and edit only the old one's status line (and the index).
 - Write one for every new dependency, folder, autoload, project, renderer or physics choice, save format, and spike.
-- The template ships ADRs 0001–0009 for its own decisions; number the game's first own decision 0010.
+- The template ships ADRs 0001–0010 for its own decisions; number the game's first own decision 0011.
 
 ## 8. CLAUDE.md
 

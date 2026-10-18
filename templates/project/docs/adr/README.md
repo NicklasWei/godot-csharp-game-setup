@@ -4,7 +4,7 @@ Each decision gets one file, `NNNN-kebab-title.md`, with **Context / Decision / 
 Accepted ADRs are immutable. To change a decision, write a new ADR that supersedes the old one, and edit only the
 old one's status line. Spikes end in an ADR that records the measurements behind the decision.
 
-ADRs 0001–0009 came with the project template; they record the foundation's decisions and why they were made.
+ADRs 0001–0010 came with the project template; they record the foundation's decisions and why they were made.
 
 | ADR | Title | Status |
 |---|---|---|
@@ -17,6 +17,7 @@ ADRs 0001–0009 came with the project template; they record the foundation's de
 | [0007](0007-data-driven-content.md) | Content is JSON in registered kinds, with permanent IDs and generated schemas | Accepted |
 | [0008](0008-developer-wiki.md) | A developer wiki generated from the code, built with DocFX | Accepted |
 | [0009](0009-deterministic-randomness.md) | Gameplay randomness is seeded xoshiro256\*\* streams | Accepted |
+| [0010](0010-justfile-task-runner.md) | Project commands run through a justfile | Accepted |
 
 ## Template
 
