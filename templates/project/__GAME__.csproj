@@ -1,0 +1,22 @@
+<Project Sdk="Godot.NET.Sdk/__GODOT_SDK__">
+    <!--
+    Game assembly (Godot layer). Keep the Sdk version in lockstep with the Godot editor version (ADR 0002).
+    Core, its tests, and the tools are separate projects; exclude them from this project's default glob.
+  -->
+    <PropertyGroup>
+        <TargetFramework>__TFM__</TargetFramework>
+        <EnableDynamicLoading>true</EnableDynamicLoading>
+        <RootNamespace>__GAME__.Game</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Remove="src/**;tests/__GAME__.Core.Tests/**;tools/**;art-src/**;docs/**;.nuget/**;TestResults/**" />
+        <ProjectReference Include="src/__GAME__.Core/__GAME__.Core.csproj" />
+        <AdditionalFiles Include="BannedSymbols.Game.txt" Link="BannedSymbols.txt" />
+    </ItemGroup>
+
+    <!-- Godot-runtime tests (ADR 0006) compile into Debug builds and editor runs, never into release exports. -->
+    <ItemGroup Condition="'$(Configuration)' == 'ExportRelease'">
+        <Compile Remove="tests/godot/**" />
+    </ItemGroup>
+</Project>

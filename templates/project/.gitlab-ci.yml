@@ -1,0 +1,131 @@
+# __TITLE__ CI pipeline — docs/CODING_STANDARDS.md §12.6. Every gate here also runs locally with the same command.
+stages:
+  - verify
+  - test
+  - godot
+  - publish
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
+
+variables:
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  DOTNET_NOLOGO: "1"
+  NUGET_PACKAGES: "$CI_PROJECT_DIR/.nuget/packages"
+  # The godot-builds release tag; bump it together with the Godot.NET.Sdk version in __GAME__.csproj (ADR 0002).
+  GODOT_VERSION: "__GODOT_RELEASE__"
+
+default:
+  # The exact SDK from global.json (ADR 0002): bump both together.
+  image: mcr.microsoft.com/dotnet/sdk:__DOTNET_SDK__
+  cache:
+    key:
+      files:
+        - Directory.Packages.props
+        - global.json
+    paths:
+      - .nuget/packages/
+  before_script:
+    - dotnet tool restore
+
+format:
+  stage: verify
+  script:
+    - dotnet csharpier check .
+
+build:
+  stage: verify
+  script:
+    - dotnet build __GAME__.sln -c Debug
+    # Release exports compile without the dev and test code paths; keep them building too.
+    - dotnet build __GAME__.csproj -c ExportRelease
+
+core-tests:
+  stage: test
+  script:
+    - >
+      dotnet test --project tests/__GAME__.Core.Tests
+      --results-directory "$CI_PROJECT_DIR/TestResults"
+      --report-xunit-junit --report-xunit-junit-filename junit.xml
+      --coverlet --coverlet-output-format cobertura
+      --coverlet-include "[__GAME__.Core]*"
+      --coverlet-threshold 85 --coverlet-threshold-type line
+    # Block scalar: the command contains ": ", which a plain YAML scalar would parse as a mapping.
+    - |
+      rate=$(grep -o -m1 'line-rate="[0-9.]*"' TestResults/coverage.cobertura*.xml | head -n1 | cut -d'"' -f2)
+      awk -v r="$rate" 'BEGIN { printf "Core line coverage: %.2f%%\n", r * 100 }'
+  coverage: '/Core line coverage: \d+(?:\.\d+)?%/'
+  artifacts:
+    when: always
+    reports:
+      junit: TestResults/junit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: TestResults/coverage.cobertura*.xml
+
+# Developer wiki (ADR 0008): generates the pages from Core and content, then builds the site with DocFX. Fails on a
+# content error, a missing en.po string or XML doc, or a broken link, so the wiki can't rot. Never part of the game.
+wiki:
+  stage: test
+  script:
+    - dotnet build tools/__GAME__.Wiki/__GAME__.Wiki.csproj -c Debug
+    - >
+      dotnet run --no-build --project tools/__GAME__.Wiki --
+      --strict --commit "$CI_COMMIT_SHORT_SHA"
+      --source-url "$CI_PROJECT_URL/-/blob/$CI_COMMIT_SHA/"
+    - dotnet docfx tools/wiki/docfx.json --warningsAsErrors
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - tools/wiki/_site/
+
+# Boots the game headless and fails on any engine or script error, then runs the Godot-runtime tests (ADR 0006).
+godot-smoke:
+  stage: godot
+  script:
+    - apt-get update -qq && apt-get install -y -qq unzip wget libfontconfig1 > /dev/null
+    - GODOT_ZIP="Godot_v${GODOT_VERSION}_mono_linux_x86_64.zip"
+    - wget -q "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}/${GODOT_ZIP}"
+    - unzip -q "$GODOT_ZIP" -d /opt/godot
+    - export GODOT_BIN=$(find /opt/godot -name "Godot_v*_mono_linux*.x86_64" -type f | head -n1)
+    - dotnet build __GAME__.csproj -c Debug
+    # Keep Godot from scanning the in-project NuGet cache.
+    - mkdir -p .nuget && touch .nuget/.gdignore
+    - '"$GODOT_BIN" --headless --path . --import 2>&1 | tee import.log'
+    - '"$GODOT_BIN" --headless --path . --quit-after 120 2>&1 | tee run.log'
+    # Once gameplay exists, also run it on the autopilot here, e.g. --quit-after 600 -- --autopilot.
+    - 'set -o pipefail; "$GODOT_BIN" --headless --path . res://tests/godot/test_runner.tscn -- --junit=godot-tests.xml 2>&1 | tee godot-tests.log'
+    # Explicit exit: under `set -e`, a "! grep" line can never fail the job.
+    - |
+      if grep -E "^(ERROR|SCRIPT ERROR|USER ERROR)" import.log run.log; then
+        echo "Godot reported errors (see above)."
+        exit 1
+      fi
+  artifacts:
+    when: always
+    paths:
+      - import.log
+      - run.log
+      - godot-tests.log
+    reports:
+      junit: godot-tests.xml
+
+# Publishes the wiki built by the wiki job to GitLab Pages, from the default branch only. Limit Pages to project
+# members in Settings > General > Visibility (ADR 0008).
+pages:
+  stage: publish
+  needs: [wiki]
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  cache: []
+  before_script: []
+  script:
+    - mv tools/wiki/_site public
+  artifacts:
+    paths:
+      - public

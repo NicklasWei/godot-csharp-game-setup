@@ -1,0 +1,18 @@
+#!/bin/sh
+# __TITLE__ pre-commit hook: fast local version of the CI gates (docs/CODING_STANDARDS.md §12.5).
+# Enable once per clone with tools/setup-hooks.sh or tools/setup-hooks.ps1. CI remains the authority.
+set -e
+
+echo "[pre-commit] restoring tools"
+dotnet tool restore > /dev/null
+
+echo "[pre-commit] csharpier check"
+dotnet csharpier check .
+
+echo "[pre-commit] build (warnings are errors)"
+dotnet build __GAME__.sln --nologo -v quiet
+
+echo "[pre-commit] core tests"
+dotnet test --project tests/__GAME__.Core.Tests --no-build
+
+echo "[pre-commit] OK"

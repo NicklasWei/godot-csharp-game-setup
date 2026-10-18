@@ -1,0 +1,21 @@
+# Normalize EOL for all files that Git considers text files.
+* text=auto eol=lf
+
+# Visual Studio solution files are CRLF by convention.
+*.sln text eol=crlf
+
+# Binary assets tracked with Git LFS (requires `git lfs install` once per machine).
+art-src/** filter=lfs diff=lfs merge=lfs -text
+*.wav filter=lfs diff=lfs merge=lfs -text
+*.ogg filter=lfs diff=lfs merge=lfs -text
+*.mp3 filter=lfs diff=lfs merge=lfs -text
+*.ttf filter=lfs diff=lfs merge=lfs -text
+*.otf filter=lfs diff=lfs merge=lfs -text
+*.glb filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.psd filter=lfs diff=lfs merge=lfs -text
+*.blend filter=lfs diff=lfs merge=lfs -text
+
+# Never LFS: Godot-ignore markers inside LFS folders.
+art-src/.gdignore -filter -diff -merge text

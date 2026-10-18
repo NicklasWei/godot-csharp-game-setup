@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <!-- Pure C# game logic. MUST NOT reference Godot (docs/CODING_STANDARDS.md §3.1, ADR 0001). -->
+    <PropertyGroup>
+        <TargetFramework>__TFM__</TargetFramework>
+        <RootNamespace>__GAME__.Core</RootNamespace>
+        <IsAotCompatible>true</IsAotCompatible>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="__GAME__.Core.Tests" />
+        <AdditionalFiles Include="../../BannedSymbols.Core.txt" Link="BannedSymbols.txt" />
+    </ItemGroup>
+</Project>

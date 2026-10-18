@@ -1,0 +1,18 @@
+# __TITLE__: English, the source of truth for localization keys (ADR 0005).
+# msgid = stable key (docs/CODING_STANDARDS.md §10); msgstr = English text.
+msgid ""
+msgstr ""
+"Project-Id-Version: __TITLE__\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Title screen: the game's name.
+msgid "ui.title.name"
+msgstr "__TITLE__"
+
+#. Title screen build label. {0} = build version string.
+msgid "ui.title.build"
+msgstr "Build {0}"

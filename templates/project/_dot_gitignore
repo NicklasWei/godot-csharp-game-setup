@@ -1,0 +1,42 @@
+# Godot 4+ (editor cache, imported resources, C# build output under .godot/mono)
+.godot/
+/android/
+
+# Exports
+/export/
+/builds/
+
+# NuGet cache used by CI (NUGET_PACKAGES points inside the project so CI can cache it)
+.nuget/
+
+# .NET build output (Core, tests, and tools build next to their csproj)
+bin/
+obj/
+*.user
+*.suo
+
+# Tests and coverage
+TestResults/
+coverage*.xml
+*.trx
+
+# Developer wiki (ADR 0008): generated pages and the built site
+tools/wiki/generated/
+tools/wiki/_site/
+
+# IDEs and OS
+.vs/
+.idea/
+.vscode/
+*.DotSettings.user
+Thumbs.db
+.DS_Store
+
+# Godot crash dumps
+mono_crash.*
+
+# NOTE: do commit *.import and *.uid files (docs/CODING_STANDARDS.md §5.10).
+
+# Local test and Godot run outputs (CI writes the same files)
+/godot-tests.xml
+/*.log

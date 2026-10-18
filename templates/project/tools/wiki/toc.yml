@@ -1,0 +1,12 @@
+# The wiki's top navigation. DocFX resolves these links from this file's location, so each points at a section's
+# source: the generated reference and API sections, the generated TOC of docs/, and CLAUDE.md in place.
+- name: Home
+  href: index.md
+- name: Reference
+  href: generated/reference/
+- name: Design docs
+  href: generated/docs/
+- name: Core API
+  href: generated/api/
+- name: Project overview
+  href: ../../CLAUDE.md

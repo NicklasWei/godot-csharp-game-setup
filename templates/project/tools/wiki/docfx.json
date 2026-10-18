@@ -1,0 +1,30 @@
+{
+  "$schema": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json",
+  "metadata": [
+    {
+      "src": [{ "src": "../__GAME__.Wiki/bin/Debug/__TFM__", "files": ["__GAME__.Core.dll"] }],
+      "dest": "generated/api",
+      "includePrivateMembers": false,
+      "namespaceLayout": "flattened"
+    }
+  ],
+  "build": {
+    "content": [
+      { "files": ["index.md", "toc.yml"] },
+      { "src": "generated/reference", "files": ["**/*.md", "toc.yml"], "dest": "reference" },
+      { "src": "generated/docs", "files": ["toc.yml"], "dest": "docs" },
+      { "src": "generated/api", "files": ["*.yml"], "dest": "api" },
+      { "src": "../../docs", "files": ["**/*.md"], "dest": "docs" },
+      { "src": "../..", "files": ["CLAUDE.md"] }
+    ],
+    "output": "_site",
+    "template": ["default", "modern"],
+    "globalMetadata": {
+      "_appName": "__TITLE__ dev wiki",
+      "_appTitle": "__TITLE__ dev wiki",
+      "_appFooter": "Developer wiki for __TITLE__. Generated from the repository; never shipped with the game.",
+      "_enableSearch": true,
+      "_disableContribution": true
+    }
+  }
+}

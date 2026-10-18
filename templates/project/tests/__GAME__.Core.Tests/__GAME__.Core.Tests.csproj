@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <!-- xUnit v3 on Microsoft.Testing.Platform (ADR 0003). Run it with "dotnet test" and the project option. -->
+    <PropertyGroup>
+        <TargetFramework>__TFM__</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>__GAME__.Core.Tests</RootNamespace>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="xunit.v3" />
+        <PackageReference Include="coverlet.MTP" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../../src/__GAME__.Core/__GAME__.Core.csproj" />
+        <AdditionalFiles Include="../../BannedSymbols.Core.txt" Link="BannedSymbols.txt" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="Xunit" />
+    </ItemGroup>
+</Project>

@@ -1,0 +1,119 @@
+# __TITLE__ .editorconfig — see docs/CODING_STANDARDS.md §12.2.
+# CSharpier owns C# layout; this file owns analyzer severities, naming, and non-C# basics.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.{json,yml,yaml}]
+indent_size = 2
+
+[*.{gdshader,gdshaderinc}]
+indent_style = tab
+
+[*.md]
+trim_trailing_whitespace = false
+
+# Godot-written files: leave formatting to the engine.
+[*.{tscn,tres,godot,import,uid,po,pot}]
+trim_trailing_whitespace = false
+indent_style = unset
+indent_size = unset
+
+[*.sln]
+end_of_line = crlf
+indent_style = tab
+
+[*.cs]
+# ---------------------------------------------------------------- Language style
+csharp_style_namespace_declarations = file_scoped:error
+csharp_using_directive_placement = outside_namespace:error
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+dotnet_style_qualification_for_field = false:error
+dotnet_style_qualification_for_property = false:error
+dotnet_style_qualification_for_method = false:error
+dotnet_style_qualification_for_event = false:error
+dotnet_style_predefined_type_for_locals_parameters_members = true:error
+dotnet_style_predefined_type_for_member_access = true:error
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:error
+dotnet_style_readonly_field = true:error
+csharp_prefer_braces = true:error
+csharp_style_var_for_built_in_types = false:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = false:suggestion
+csharp_style_expression_bodied_methods = when_on_single_line:suggestion
+csharp_style_expression_bodied_properties = true:suggestion
+csharp_prefer_static_local_function = true:warning
+csharp_style_prefer_primary_constructors = false:suggestion
+dotnet_style_namespace_match_folder = true
+
+# ---------------------------------------------------------------- IDE diagnostics enforced in build
+dotnet_diagnostic.IDE0005.severity = warning   # unnecessary using
+dotnet_diagnostic.IDE0011.severity = warning   # braces
+dotnet_diagnostic.IDE0040.severity = warning   # accessibility modifiers
+dotnet_diagnostic.IDE0044.severity = warning   # readonly field
+dotnet_diagnostic.IDE0161.severity = warning   # file-scoped namespace
+dotnet_diagnostic.IDE0065.severity = warning   # using placement
+dotnet_diagnostic.IDE0130.severity = warning   # namespace matches folder (disabled for game/** below)
+dotnet_diagnostic.IDE0055.severity = none      # formatting: CSharpier owns layout
+
+# ---------------------------------------------------------------- Documentation (all members, incl. private)
+dotnet_diagnostic.CS1591.severity = error
+dotnet_diagnostic.SA1600.severity = error
+dotnet_diagnostic.SA1601.severity = error
+dotnet_diagnostic.SA1602.severity = error
+dotnet_diagnostic.SA1611.severity = error
+dotnet_diagnostic.SA1615.severity = error
+
+# ---------------------------------------------------------------- StyleCop policy
+dotnet_diagnostic.SA1101.severity = none       # no 'this.' prefix
+dotnet_diagnostic.SA1309.severity = none       # allow leading underscore...
+dotnet_diagnostic.SX1309.severity = error      # ...and require it on private instance fields
+dotnet_diagnostic.SA1633.severity = none       # no file headers
+dotnet_diagnostic.SA1200.severity = error      # usings outside namespace (stylecop.json)
+dotnet_diagnostic.SA1124.severity = error      # no regions
+
+# StyleCop layout/spacing rules that conflict with CSharpier output.
+dotnet_diagnostic.SA1000.severity = none
+dotnet_diagnostic.SA1008.severity = none
+dotnet_diagnostic.SA1009.severity = none
+dotnet_diagnostic.SA1010.severity = none
+dotnet_diagnostic.SA1011.severity = none
+dotnet_diagnostic.SA1111.severity = none
+dotnet_diagnostic.SA1116.severity = none
+dotnet_diagnostic.SA1117.severity = none
+dotnet_diagnostic.SA1118.severity = none
+dotnet_diagnostic.SA1127.severity = none
+dotnet_diagnostic.SA1128.severity = none
+dotnet_diagnostic.SA1137.severity = none
+dotnet_diagnostic.SA1413.severity = none
+dotnet_diagnostic.SA1500.severity = none
+dotnet_diagnostic.SA1501.severity = none
+dotnet_diagnostic.SA1502.severity = none
+dotnet_diagnostic.SA1503.severity = none
+dotnet_diagnostic.SA1504.severity = none
+dotnet_diagnostic.SA1515.severity = none
+dotnet_diagnostic.SA1516.severity = none
+
+# ---------------------------------------------------------------- Banned APIs (BannedSymbols.*.txt)
+dotnet_diagnostic.RS0030.severity = error
+
+# Godot layer: folders are snake_case (Godot convention), namespaces are PascalCase by hand mapping.
+[game/**.cs]
+dotnet_diagnostic.IDE0130.severity = none
+
+# Godot-runtime tests compile into the game assembly; their namespace is __GAME__.RuntimeTests.*.
+[tests/godot/**.cs]
+dotnet_diagnostic.IDE0130.severity = none
+
+# Tests: method names are the documentation; test classes still need a <summary> (enforced in review).
+[tests/**.cs]
+dotnet_diagnostic.CS1591.severity = none
+dotnet_diagnostic.SA1600.severity = none
+dotnet_diagnostic.CA1707.severity = none       # underscores in Method_Scenario_Expected names

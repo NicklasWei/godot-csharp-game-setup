@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <!--
+    Developer wiki generator (ADR 0008): writes Markdown pages from Core's content, settings records, enums, XML docs,
+    the input map, and the PO catalogs, for DocFX to build. A dev tool only: the game never references it, and tools/
+    is excluded from the game assembly's glob and hidden from Godot by tools/.gdignore.
+  -->
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>__TFM__</TargetFramework>
+        <RootNamespace>__GAME__.Wiki</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../../src/__GAME__.Core/__GAME__.Core.csproj" />
+    </ItemGroup>
+</Project>

@@ -1,0 +1,9 @@
+.godot/
+**/bin/
+**/obj/
+TestResults/
+art-src/
+.nuget/
+tools/wiki/_site/
+tools/wiki/generated/
+godot-tests.xml

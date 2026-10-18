@@ -1,0 +1,33 @@
+M:Godot.GD.Print(System.String);Use the ILog service (GodotLog)
+M:Godot.GD.Print(System.Object[]);Use the ILog service (GodotLog)
+M:Godot.GD.PrintRich(System.String);Use the ILog service (GodotLog)
+M:Godot.GD.PrintRich(System.Object[]);Use the ILog service (GodotLog)
+M:Godot.GD.PrintErr(System.String);Use the ILog service (GodotLog)
+M:Godot.GD.PrintErr(System.Object[]);Use the ILog service (GodotLog)
+M:Godot.GD.PrintS(System.Object[]);Use the ILog service (GodotLog)
+M:Godot.GD.PrintT(System.Object[]);Use the ILog service (GodotLog)
+M:Godot.GD.PrintRaw(System.String);Use the ILog service (GodotLog)
+M:Godot.GD.PrintRaw(System.Object[]);Use the ILog service (GodotLog)
+M:Godot.GD.PushError(System.String);Use the ILog service (GodotLog)
+M:Godot.GD.PushError(System.Object[]);Use the ILog service (GodotLog)
+M:Godot.GD.PushWarning(System.String);Use the ILog service (GodotLog)
+M:Godot.GD.PushWarning(System.Object[]);Use the ILog service (GodotLog)
+M:Godot.GD.RandFromSeed(System.UInt64@);Gameplay: a Core RngStream. Visual-only: a cosmetic RngStream seeded from OS entropy
+M:Godot.GD.Randf;Gameplay: a Core RngStream. Visual-only: a cosmetic RngStream seeded from OS entropy
+M:Godot.GD.Randi;Gameplay: a Core RngStream. Visual-only: a cosmetic RngStream seeded from OS entropy
+M:Godot.GD.RandRange(System.Double,System.Double);Gameplay: a Core RngStream. Visual-only: a cosmetic RngStream seeded from OS entropy
+M:Godot.GD.RandRange(System.Int32,System.Int32);Gameplay: a Core RngStream. Visual-only: a cosmetic RngStream seeded from OS entropy
+M:Godot.GD.Randfn(System.Double,System.Double);Gameplay: a Core RngStream. Visual-only: a cosmetic RngStream seeded from OS entropy
+M:Godot.GD.Randomize;Gameplay: a Core RngStream. Visual-only: a cosmetic RngStream seeded from OS entropy
+T:System.Random;Gameplay: a Core RngStream. Visual-only: a cosmetic RngStream seeded from OS entropy
+P:System.DateTime.Now;Use the IClock service (GodotClock)
+P:System.DateTime.UtcNow;Use the IClock service (GodotClock)
+P:System.DateTimeOffset.Now;Use the IClock service (GodotClock)
+P:System.DateTimeOffset.UtcNow;Use the IClock service (GodotClock)
+M:System.Console.WriteLine(System.String);Use the ILog service (GodotLog)
+M:System.Console.WriteLine(System.Object);Use the ILog service (GodotLog)
+M:System.Console.WriteLine;Use the ILog service (GodotLog)
+M:System.Console.Write(System.String);Use the ILog service (GodotLog)
+M:System.Console.Write(System.Object);Use the ILog service (GodotLog)
+M:System.Threading.Thread.Sleep(System.Int32);Never block the main thread
+M:System.Threading.Thread.Sleep(System.TimeSpan);Never block the main thread

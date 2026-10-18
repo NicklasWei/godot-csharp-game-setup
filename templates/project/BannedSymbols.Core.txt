@@ -1,0 +1,11 @@
+T:System.Random;Use __GAME__.Core.Randomness.RngStream (deterministic, seeded)
+P:System.DateTime.Now;Inject __GAME__.Core.Diagnostics.IClock
+P:System.DateTime.UtcNow;Inject __GAME__.Core.Diagnostics.IClock
+P:System.DateTime.Today;Inject __GAME__.Core.Diagnostics.IClock
+P:System.DateTimeOffset.Now;Inject __GAME__.Core.Diagnostics.IClock
+P:System.DateTimeOffset.UtcNow;Inject __GAME__.Core.Diagnostics.IClock
+P:System.Environment.TickCount;Inject __GAME__.Core.Diagnostics.IClock
+P:System.Environment.TickCount64;Inject __GAME__.Core.Diagnostics.IClock
+T:System.Console;Use __GAME__.Core.Diagnostics.ILog
+M:System.Threading.Thread.Sleep(System.Int32);Never block; keep code and tests deterministic
+M:System.Threading.Thread.Sleep(System.TimeSpan);Never block; keep code and tests deterministic
