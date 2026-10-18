@@ -43,12 +43,22 @@ the rest are for you to apply as the game grows.
   `csharpier check`. Ignore test outputs in `.csharpierignore` and `.gitignore`. **(templated)**
 - **XML comments can't contain `--`**, so a csproj comment quoting `dotnet test --project` breaks the project file
   (MSB4025). Keep command lines out of MSBuild comments.
+- **Skill uploads drop dot-prefixed paths.** After one upload, every template file or folder starting with `.` was
+  gone (the CI files, `.editorconfig`, the tool manifest, the hooks, every `.gdignore` and `.gitkeep`), along with
+  folders that held only those, and the scaffold still reported success. Rule: store them as `_dot_<name>`, list every
+  template file in `templates/MANIFEST.txt`, and let the scaffold fail when the template doesn't match it.
+  **(templated)**
 
 ## 2. Toolchain and CI
 
 - **A floating SDK image broke CI.** `dotnet/sdk:10.0` moved four feature bands ahead of the dev machine; the new
   analyzers (IDE0062) failed the warnings-as-errors build only in CI. Rule: exact SDK in `global.json`
   (`rollForward: latestPatch`) and the same exact image in CI; bump both in one commit. **(templated)**
+- **Pin an SDK band every environment can install.** A Claude Code cloud container reached Ubuntu's archive
+  (`apt-get install dotnet-sdk-10.0`, the 10.0.1xx band) but not Microsoft's download hosts, while `godot-builds`
+  release downloads from GitHub worked. Pinning the 1xx band (`--dotnet-sdk 10.0.112`) let that container, CI
+  (`setup-dotnet` with `global-json-file`) and the dev machine run identical gates; the dev machine installs that band
+  side by side.
 - **`! grep` can never fail a job under `set -e`.** The headless-boot error check needs an explicit
   `if grep …; then exit 1; fi`. **(templated)**
 - **A YAML plain scalar containing `": "` parses as a mapping.** Use block scalars (`|`, `>`) for CI script lines

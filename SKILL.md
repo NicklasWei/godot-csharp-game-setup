@@ -151,15 +151,23 @@ to raise during planning, because they're expensive to change later:
 | [references/wiki.md](references/wiki.md) | Working on the wiki: what each page comes from, strict checks, adding pages, DocFX problems |
 | [references/lessons-learned.md](references/lessons-learned.md) | Planning, reviewing a design, or debugging something odd in Godot C#, CI, or tests |
 | `templates/project/docs/CODING_STANDARDS.md` | The full rules the scaffolded project follows |
-| `templates/project/` | Individual files to copy by hand (replace `__GAME__`, `__TITLE__`, and the other `__TOKENS__`) |
+| `templates/project/` | Individual files to copy by hand (replace `__GAME__`, `__TITLE__`, and the other `__TOKENS__`, and rename `_dot_` to `.`) |
 
 ## Keeping this skill current
 
 Pinned versions verified together (October 2026, on Windows): Godot 4.5.1-stable, 4.6.1-stable, and 4.8-dev7 with
 .NET SDK 10.0.401 and `net10.0`; CSharpier 1.3.0, DocFX 2.81.0, StyleCop.Analyzers 1.2.0-beta.556,
-Roslynator.Analyzers 5.0.1, BannedApiAnalyzers 5.6.0, xunit.v3 4.0.1, coverlet.MTP 10.1.0. The CI templates are valid
+Roslynator.Analyzers 5.0.1, BannedApiAnalyzers 5.6.0, xunit.v3 4.0.1, coverlet.MTP 10.1.0. Also verified on Linux in a
+Claude Code cloud container (October 2026): Godot 4.8-beta1 with .NET SDK 10.0.112, GitHub variant. The CI templates are valid
 YAML but weren't run on GitLab or GitHub from the template (the GitLab one mirrors a pipeline that runs green; the
 GitHub one, with actions checkout/setup-dotnet v4, upload-pages-artifact v3, deploy-pages v4, is a port), so watch the
 first pipeline. Newer versions are usually fine; after bumping any, scaffold a throwaway project and rerun
 [references/verification.md](references/verification.md) before trusting it. When a scaffolded project learns
 something the template should know, update the template and `references/lessons-learned.md` here too.
+
+**Template files never start with a dot.** Skill uploads drop every path segment that starts with `.` (in one upload,
+all 22 template dotfiles vanished and the scaffold still reported success). Store them as `_dot_<name>`, in folder
+names too (`_dot_github/workflows/ci.yml`); `scaffold.py` restores the dot on copy. `templates/MANIFEST.txt` lists
+every template file, and the scaffold refuses to run when one is missing or unlisted. After adding or removing a
+template file, run `python scripts/scaffold.py --update-manifest`; before every upload, run
+`python scripts/scaffold.py --check-template`.

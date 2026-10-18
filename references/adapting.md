@@ -71,4 +71,5 @@ one reviewable change at a time:
 5. **Localization keys:** move literals to keys area by area; the orphan and coverage tests keep it honest.
 6. **CI**, then the wiki, then the docs and ADRs for what was decided along the way.
 
-Copy individual files from `templates/project/`, replacing `__GAME__` and the other tokens by hand.
+Copy individual files from `templates/project/`, replacing `__GAME__` and the other tokens by hand, and renaming each
+`_dot_` prefix back to `.` (`_dot_editorconfig` is `.editorconfig`; the template can't store dotfiles, see SKILL.md).

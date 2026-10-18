@@ -5,9 +5,17 @@ Standard library only. Copies templates/project/ into an empty folder, replacing
 paths and file contents, generates the non-English PO catalogs, then (unless --skip-dotnet) creates the solution,
 restores the local tools, and runs CSharpier so the result passes `dotnet csharpier check .` straight away.
 
+Skill uploads drop every path that starts with a dot, so the template stores dotfiles as _dot_<name> (restored to
+.<name> on copy), and templates/MANIFEST.txt lists every template file, so a lost file fails loudly instead of
+being silently missing from the project.
+
 Example:
     python scaffold.py --name StarForge --title "Star Forge" --dest D:/projects/star-forge \
         --godot 4.5.1-stable --locales en,es,de --ci gitlab
+
+Before uploading the skill, check the template; after adding or removing template files, update the manifest:
+    python scaffold.py --check-template
+    python scaffold.py --update-manifest
 """
 
 from __future__ import annotations
@@ -22,6 +30,7 @@ from pathlib import Path
 
 SKILL_DIR = Path(__file__).resolve().parent.parent
 TEMPLATE_DIR = SKILL_DIR / "templates" / "project"
+MANIFEST = SKILL_DIR / "templates" / "MANIFEST.txt"
 
 # gettext Plural-Forms headers for common locales; anything else gets the two-form default with a warning.
 PLURAL_FORMS = {
@@ -55,9 +64,10 @@ RENDERERS = {
     "gl_compatibility": ("GL Compatibility", "gl_compatibility"),
 }
 
+# Template source paths (dotfiles are stored as _dot_<name>) that belong to one CI host only.
 CI_PATHS = {
-    "gitlab": [".gitlab-ci.yml", ".gitlab"],
-    "github": [".github"],
+    "gitlab": ["_dot_gitlab-ci.yml", "_dot_gitlab"],
+    "github": ["_dot_github"],
 }
 
 RESERVED_NAMES = {"Godot", "System", "Microsoft", "Game", "Core", "Tests", "Node", "Object", "Resource", "Engine"}
@@ -66,6 +76,55 @@ RESERVED_NAMES = {"Godot", "System", "Microsoft", "Game", "Core", "Tests", "Node
 def fail(message: str) -> None:
     print(f"error: {message}", file=sys.stderr)
     sys.exit(2)
+
+
+def template_files() -> list[str]:
+    """Lists every file in templates/project/ as a POSIX path relative to it, sorted."""
+    return sorted(path.relative_to(TEMPLATE_DIR).as_posix() for path in TEMPLATE_DIR.rglob("*") if path.is_file())
+
+
+def reject_dot_paths(files: list[str]) -> None:
+    """Fails on template paths with a segment starting with a dot: skill uploads drop them."""
+    dotted = [path for path in files if any(part.startswith(".") for part in path.split("/"))]
+    if dotted:
+        fail(
+            "Template paths must not start with a dot, because skill uploads drop them. "
+            "Rename each dot segment to _dot_<name> (the copy restores the dot): " + ", ".join(dotted)
+        )
+
+
+def check_template() -> None:
+    """Fails unless templates/project/ holds exactly the files listed in templates/MANIFEST.txt."""
+    present = template_files()
+    reject_dot_paths(present)
+    if not MANIFEST.is_file():
+        fail(f"{MANIFEST} is missing, so the template can't be checked. Restore it from a verified copy of the skill.")
+    expected = [
+        line.strip()
+        for line in MANIFEST.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.startswith("#")
+    ]
+    missing = sorted(set(expected) - set(present))
+    if missing:
+        fail("The template is incomplete (files lost in upload?). Missing: " + ", ".join(missing))
+    unlisted = sorted(set(present) - set(expected))
+    if unlisted:
+        fail(
+            "Template files missing from templates/MANIFEST.txt (run with --update-manifest after adding files): "
+            + ", ".join(unlisted)
+        )
+
+
+def write_manifest() -> None:
+    """Rewrites templates/MANIFEST.txt from the files currently in templates/project/."""
+    files = template_files()
+    reject_dot_paths(files)
+    header = (
+        "# Every file in templates/project/. scaffold.py refuses to run if one is missing or unlisted.\n"
+        "# Regenerate with: python scripts/scaffold.py --update-manifest\n"
+    )
+    MANIFEST.write_text(header + "\n".join(files) + "\n", encoding="utf-8", newline="\n")
+    print(f"Wrote {len(files)} entries to {MANIFEST}.")
 
 
 def parse_godot_release(release: str) -> tuple[str, str]:
@@ -152,17 +211,34 @@ def run(command: list[str], cwd: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Scaffold a Godot 4 C# game project.")
-    parser.add_argument("--name", required=True, help="PascalCase identifier: assembly and namespace root, e.g. StarForge")
+    parser.add_argument("--name", help="Required. PascalCase identifier: assembly and namespace root, e.g. StarForge")
     parser.add_argument("--title", help="Display title, e.g. 'Star Forge' (default: the name)")
-    parser.add_argument("--dest", required=True, help="Target folder; must be empty or hold only .git")
-    parser.add_argument("--godot", required=True, help="godot-builds release tag, e.g. 4.5.1-stable or 4.8-dev7")
+    parser.add_argument("--dest", help="Required. Target folder; must be empty or hold only .git")
+    parser.add_argument("--godot", help="Required. godot-builds release tag, e.g. 4.5.1-stable or 4.8-dev7")
     parser.add_argument("--tfm", default="net10.0", help="Target framework (default net10.0); must be >= GodotSharp's")
     parser.add_argument("--dotnet-sdk", help="Exact .NET SDK for global.json and CI (default: newest installed match)")
     parser.add_argument("--locales", default="en", help="Comma-separated Godot locale codes; en first (default: en)")
     parser.add_argument("--ci", choices=["gitlab", "github", "none"], default="gitlab")
     parser.add_argument("--renderer", choices=sorted(RENDERERS), default="forward_plus")
     parser.add_argument("--skip-dotnet", action="store_true", help="Skip solution creation, tool restore, and format")
+    parser.add_argument(
+        "--check-template", action="store_true", help="Only check the template against its manifest (before uploading)"
+    )
+    parser.add_argument(
+        "--update-manifest", action="store_true", help="Rewrite templates/MANIFEST.txt (after adding or removing files)"
+    )
     args = parser.parse_args()
+
+    if args.update_manifest:
+        write_manifest()
+        return
+    check_template()
+    if args.check_template:
+        print(f"Template OK: {len(template_files())} files match {MANIFEST.name}, none dot-prefixed.")
+        return
+    missing_arguments = [f"--{option}" for option in ("name", "dest", "godot") if not getattr(args, option)]
+    if missing_arguments:
+        parser.error("the following arguments are required: " + ", ".join(missing_arguments))
 
     name = args.name
     if not re.fullmatch(r"[A-Z][A-Za-z0-9]*", name):
