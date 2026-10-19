@@ -27,7 +27,7 @@
 
 ## Commands
 
-Routine commands are [just](https://github.com/casey/just) recipes in the root `justfile` (Standards §12.7); `just` lists them. Copy `.env.example` to `.env` and set `GODOT_BIN` there.
+Routine commands are [just](https://github.com/casey/just) recipes in the root `justfile` (Standards §12.7); `just` lists them. Copy `.env.example` to `.env` and set `GODOT_BIN` there (a Windows path goes in single quotes).
 
 | Recipe | Does |
 |---|---|
@@ -60,9 +60,9 @@ dotnet csharpier format .
 
 Regenerate the content JSON Schemas after changing a content model with `UPDATE_CONTENT_SCHEMAS=1 dotnet test --project tests/__GAME__.Core.Tests` (a test fails while they're stale).
 
-Build the developer wiki with `tools/wiki/build.ps1` (or `tools/wiki/build.sh`); add `-Serve` (`--serve`) to serve it at `http://localhost:8080` and `-Strict` (`--strict`) to fail on missing strings or docs, as CI does.
+Build the developer wiki with `tools/wiki/build.ps1` (or `sh tools/wiki/build.sh`); add `-Serve` (`--serve`) to serve it at `http://localhost:8080` and `-Strict` (`--strict`) to fail on missing strings or docs, as CI does.
 
-Enable the git hooks once per clone with `tools/setup-hooks.ps1` (or `tools/setup-hooks.sh`).
+Enable the git hooks once per clone with `tools/setup-hooks.ps1` (or `sh tools/setup-hooks.sh`: a project scaffolded on Windows commits the scripts without the executable bit).
 
 Godot commands use the **console** build of the editor (on Windows, the `_console.exe`; it prints to the terminal and returns exit codes). Set `GODOT_BIN` to it (in `.env` for `just`). <!-- On the main dev machine: <path> -->
 
