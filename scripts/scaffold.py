@@ -372,10 +372,18 @@ def main() -> None:
 
     print()
     print("Next steps (see the skill's references/verification.md):")
-    print("  1. git init (if needed), then: git lfs install; tools/setup-hooks.sh (or .ps1)")
+    if args.skip_dotnet:
+        # The skipped steps come first: without them there's no solution to build, and CSharpier's check fails, since
+        # the token replacement changes line lengths and using order.
+        projects = f"{name}.csproj src/{name}.Core/{name}.Core.csproj tests/{name}.Core.Tests/{name}.Core.Tests.csproj"
+        print("  0. Run what --skip-dotnet skipped, in the project folder:")
+        print(f"     dotnet new sln --format sln -n {name}")
+        print(f"     dotnet sln {name}.sln add {projects} tools/{name}.Wiki/{name}.Wiki.csproj")
+        print("     dotnet tool restore  &&  dotnet csharpier format .")
+    print("  1. git init (if needed), then: git lfs install; sh tools/setup-hooks.sh (or .ps1)")
     print(f"  2. dotnet build {name}.sln  &&  dotnet test --project tests/{name}.Core.Tests")
     print('  3. "$GODOT_BIN" --headless --path . --import   (then the boot and runtime-test commands in CLAUDE.md)')
-    print("  4. tools/wiki/build.sh --strict  (or build.ps1 -Strict)")
+    print("  4. sh tools/wiki/build.sh --strict  (or build.ps1 -Strict)")
     print("  5. Fill in docs/GDD.md, docs/ART_DIRECTION.md, and docs/IMPLEMENTATION_PLAN.md with the game's specifics.")
 
 

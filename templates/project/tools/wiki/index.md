@@ -26,4 +26,4 @@ dotnet tool restore
 ```
 
 The script builds the generator, writes the pages, and runs DocFX. `-Serve` then serves the site at
-<http://localhost:8080>. On Linux or macOS, run `tools/wiki/build.sh --serve`.
+<http://localhost:8080>. On Linux or macOS, run `sh tools/wiki/build.sh --serve`.
