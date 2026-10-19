@@ -33,6 +33,8 @@ it decides tooling, structure, and quality gates, and leaves gameplay architectu
      `net10.0`). The default `net10.0` was verified with Godot 4.5.1, 4.6.1, and 4.8-dev7.
    - The Godot .NET editor of the chosen version, and its **console** build path for `GODOT_BIN`.
    - Godot must be 4.5 or later (the runtime test runner uses `OS.AddLogger`).
+   - `just --version`: the command runner behind the project's short commands (`winget install Casey.Just`,
+     `brew install just`, `apt install just`). Optional for the scaffold itself; every recipe has a raw command too.
 3. **Scaffold** into an empty folder (an initialized git repo is fine):
 
    ```bash
@@ -68,6 +70,7 @@ Directory.Packages.props      Central package versions
 BannedSymbols.*.txt           No System.Random, wall clock, Console, GD.Print, GD.Rand*, Thread.Sleep
 .config/dotnet-tools.json     CSharpier and DocFX, pinned
 .githooks/, tools/setup-hooks pre-commit (format, build, Core tests) plus Git LFS stand-in hooks
+justfile, .env.example        Short commands (just build, just test, just ci, ...); GODOT_BIN from a git-ignored .env
 .gitlab-ci.yml | .github/     format, build (Debug + ExportRelease), Core tests + coverage, wiki, godot-smoke, pages
 project.godot                 Assembly name, physics interpolation, input map (pause), translations, renderer
 <Game>.csproj                 Godot.NET.Sdk pinned; excludes Core, tests, tools; runtime tests not in ExportRelease
@@ -82,7 +85,7 @@ localization/                 en.po plus one fuzzy PO per locale
 content/schemas/              Generated JSON Schemas (none until the first content kind)
 tools/<Game>.Wiki, tools/wiki Wiki generator and DocFX site; .claude/launch.json previews it
 docs/                         GDD, ART_DIRECTION, CODING_STANDARDS (the binding rules), IMPLEMENTATION_PLAN,
-                              adr/ 0001–0009 recording the template's own decisions
+                              adr/ 0001–0010 recording the template's own decisions
 ```
 
 ## The rules that matter most

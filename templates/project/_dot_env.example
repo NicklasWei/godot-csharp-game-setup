@@ -1,0 +1,7 @@
+# Machine-specific settings for `just` (copy to .env, which git ignores).
+# GODOT_BIN is the Godot __GODOT_RELEASE__ .NET *console* binary.
+# Windows:
+# GODOT_BIN=C:\Godot\Godot_v__GODOT_RELEASE___mono_win64\Godot_v__GODOT_RELEASE___mono_win64_console.exe
+# Linux:
+# GODOT_BIN=/opt/godot/Godot_v__GODOT_RELEASE___mono_linux_x86_64/Godot_v__GODOT_RELEASE___mono_linux.x86_64
+GODOT_BIN=

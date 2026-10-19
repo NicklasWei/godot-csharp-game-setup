@@ -37,6 +37,9 @@ mono_crash.*
 
 # NOTE: do commit *.import and *.uid files (docs/CODING_STANDARDS.md §5.10).
 
+# Machine-specific settings for just (copy .env.example)
+.env
+
 # Local test and Godot run outputs (CI writes the same files)
 /godot-tests.xml
 /*.log

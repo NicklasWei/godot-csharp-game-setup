@@ -490,6 +490,10 @@ Each overload needs its own documentation ID; verify a new entry by making the b
 | publish | pages | Publishes the wiki from the default branch |
 | export | (later) | Exports on tags, once export presets exist |
 
+### 12.7 Task runner
+
+Day-to-day commands are recipes in the root `justfile` ([just](https://github.com/casey/just), ADR 0010): `just` lists them, and `just ci` runs every gate in CI order. Recipes run in PowerShell on Windows and `sh` elsewhere, and read machine-specific settings (`GODOT_BIN`) from a git-ignored `.env` (template: `.env.example`). A new routine command gets a recipe with a one-line comment, which `just --list` shows. CI and the pre-commit hook call the tools directly, so they don't need `just`.
+
 ---
 
 ## 13. Developer wiki

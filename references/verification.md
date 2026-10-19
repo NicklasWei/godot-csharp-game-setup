@@ -10,6 +10,9 @@ building with `--strict` and DocFX `--warningsAsErrors`; in GitLab, GitHub, Engl
 and again after adding a sample content kind. The CI files were checked as valid YAML and mirror a pipeline that runs
 green on GitLab, but neither was run on its host from the template: watch the first pipeline closely (step 5).
 
+With [just](https://github.com/casey/just) installed and `GODOT_BIN` set in `.env` (copy `.env.example`), `just ci`
+runs sections 1 to 3 in one go. The steps below are the same gates one at a time.
+
 ## 1. .NET gates
 
 ```bash
