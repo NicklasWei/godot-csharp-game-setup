@@ -64,7 +64,7 @@ Open the project in the editor once and run it (F5): the title screen shows the 
 ## 3. Wiki
 
 ```bash
-tools/wiki/build.sh --strict
+sh tools/wiki/build.sh --strict
 ```
 
 (`tools/wiki/build.ps1 -Strict` on Windows; both need a git repository for the commit hash.) Expect "Wrote 6 pages"

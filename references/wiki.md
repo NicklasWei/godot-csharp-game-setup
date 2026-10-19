@@ -52,7 +52,7 @@ dotnet tool restore
 ```
 
 ```bash
-tools/wiki/build.sh --strict --serve
+sh tools/wiki/build.sh --strict --serve
 ```
 
 (`tools/wiki/build.ps1 -Strict -Serve` on Windows.) The script builds the generator, writes the pages to
