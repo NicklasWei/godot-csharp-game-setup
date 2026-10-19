@@ -48,7 +48,7 @@ godot-test *args: (_godot "--headless" "--path" "." "res://tests/godot/test_runn
 # Build the developer wiki with strict checks, as CI does.
 [unix]
 wiki:
-    tools/wiki/build.sh --strict
+    sh tools/wiki/build.sh --strict
 
 # Build the developer wiki with strict checks, as CI does.
 [windows]
@@ -58,7 +58,7 @@ wiki:
 # Build the wiki and serve it at http://localhost:8080.
 [unix]
 wiki-serve:
-    tools/wiki/build.sh --serve
+    sh tools/wiki/build.sh --serve
 
 # Build the wiki and serve it at http://localhost:8080.
 [windows]
@@ -68,7 +68,7 @@ wiki-serve:
 # Enable the git hooks for this clone (once per clone).
 [unix]
 hooks:
-    tools/setup-hooks.sh
+    sh tools/setup-hooks.sh
 
 # Enable the git hooks for this clone (once per clone).
 [windows]
@@ -93,4 +93,4 @@ _godot *args: _need-godot
 # Fails with a hint when GODOT_BIN isn't set.
 [private]
 _need-godot:
-    @{{ if env("GODOT_BIN", "") == "" { error("GODOT_BIN is not set: copy .env.example to .env and set it to the Godot console binary") } else { "echo Godot: " + env("GODOT_BIN", "") } }}
+    @{{ if env("GODOT_BIN", "") == "" { error("GODOT_BIN is not set: copy .env.example to .env and set it to the Godot console binary") } else { "echo Godot: " + quote(env("GODOT_BIN", "")) } }}
