@@ -91,26 +91,6 @@ docs/                         GDD, ART_DIRECTION, AUDIO (music, effects, ambienc
                               decisions
 ```
 
-## The rules that matter most
-
-The full text is the scaffolded `docs/CODING_STANDARDS.md`; these are the ones to keep in mind when planning:
-
-- **Game rules live in Core, unit-tested; Godot nodes are views.** Core never references Godot. A stage's simulation
-  is one Core session stepped in a fixed order; nodes read input, call it, and present it.
-- **Dependencies flow down:** `Main` builds services and passes them through `Initialize(...)` before `AddChild`. No
-  mutable statics, at most one autoload, no service locator. Call down, signal up with C# events.
-- **Tools enforce everything they can:** warnings as errors, XML docs on every member (they become the wiki), banned
-  APIs, CSharpier, exact SDK pins in global.json and CI.
-- **Tests cover the project files too:** the input map's parity, scene text keys, PO catalogs, content, and schemas
-  are checked as data in milliseconds; the runtime runner fails on any engine error and checks 0 B/frame.
-- **Deterministic by default:** seeded `RngStream`s per consumer; time through `IClock`.
-- **Data-driven:** content kinds registered once in `ContentKinds.All`; IDs permanent; unknown JSON properties are
-  errors; schemas generated; tunables in content, not in `[Export]`s.
-- **Localized from day one:** stable PO keys, `en.po` as the source of truth, fuzzy until translated.
-- **Zero managed allocations per gameplay frame**, enforced by runtime tests.
-- **The docs can't drift:** the wiki is generated from code and built with `--strict` in CI; design docs and ADRs are
-  updated in the same change; spikes end in ADRs with numbers.
-
 ## Lessons that cost the most
 
 All of them, with the stories and fixes, are in [references/lessons-learned.md](references/lessons-learned.md). The ones
