@@ -55,9 +55,15 @@ user's environment, so use the full path (quoted; it often contains spaces).
 "$GODOT_BIN" --headless --path . res://tests/godot/test_runner.tscn
 ```
 
+```bash
+"$GODOT_BIN" --headless --path . res://tests/godot/test_runner.tscn -- --gc-stress
+```
+
 The import creates `.uid` files next to the scripts: commit them. The boot must log no line starting with `ERROR`,
-`SCRIPT ERROR`, or `USER ERROR`. The runner prints `PASS`/`FAIL` per test and exits 1 on any failure. A warning about
-an unknown argument (`--junit=…`) from the main-scene test is expected: `Main` warns about arguments it doesn't know.
+`SCRIPT ERROR`, or `USER ERROR`. The runner prints `PASS`/`FAIL` per test and exits 1 on any failure. The second run
+parks the .NET finalizer thread between tests (ADR 0006) and must pass the same way. A warning about an unknown
+argument (`--junit=…` or `--gc-stress`) from the main-scene test is expected: `Main` warns about arguments it doesn't
+know.
 
 Open the project in the editor once and run it (F5): the title screen shows the game's name and the build version.
 

@@ -14,7 +14,7 @@ public sealed class MainSceneTests
     public static async Task Main_Boots_ToTheTitleScreen(GodotTestContext context)
     {
         // Arrange
-        Main main = GodotTestContext.Instantiate<Main>("res://game/app/main.tscn");
+        Main main = context.Instantiate<Main>("res://game/app/main.tscn");
 
         // Act
         context.Root.AddChild(main);

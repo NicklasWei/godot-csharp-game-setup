@@ -77,7 +77,7 @@ Godot commands use the **console** build of the editor (on Windows, the `_consol
 "$GODOT_BIN" --headless --path . res://tests/godot/test_runner.tscn
 ```
 
-The first reimports assets (needed after adding files). The second boots the game headless; any `ERROR` line is a failure. The third runs the Godot-runtime tests (exit code 1 on failure; add `-- --filter=Name` or `-- --junit=report.xml`).
+The first reimports assets (needed after adding files). The second boots the game headless; any `ERROR` line is a failure. The third runs the Godot-runtime tests (exit code 1 on failure; add `-- --filter=Name` or `-- --junit=report.xml`, or `-- --gc-stress` to hold C# wrappers unfinalized between tests, [ADR 0006](docs/adr/0006-godot-runtime-tests-and-ci.md)).
 
 **Dev flags** (after `--`, listed in the wiki): `--autopilot` drives the game with scripted input; `--pseudoloc` turns on pseudolocalization.
 
@@ -123,7 +123,7 @@ The first reimports assets (needed after adding files). The second boots the gam
 - **Store `StringName` and `NodePath` values in `static readonly` fields.** Input actions live in `game/controls/InputActions.cs`, with names in Core's `InputActionNames`.
 - **Don't override `_Input` / `_UnhandledInput` for continuous input**: Godot allocates a wrapper per event delivered to C#. Poll `Input` instead.
 - **C# events** by default; `[Signal]` only for editor wiring or `await ToSignal`. Unsubscribe in `_ExitTree`; subscribe with named methods, not lambdas.
-- `QueueFree()`, never `Free()`. `IsInstanceValid` on references that may outlive their target. Pooled nodes are deactivated, never freed, during gameplay.
+- `QueueFree()`, never `Free()`. `IsInstanceValid` on references that may outlive their target. Pooled nodes are deactivated, never freed, during gameplay. Hold a resource loaded by path for as long as anything may load it again: one left to its C# wrapper's finalizer can break a later load (godot#112067, ADR 0006).
 - Per-object material variation uses `instance uniform`. Never mutate a shared `Resource` at runtime.
 - Pause uses `ProcessMode`. Godot objects are main-thread only; marshal worker results with `CallDeferred`.
 - **Hand-editing `.tscn` / `.tres`:** reference resources by `res://` path and never invent `uid://` values. Commit `*.uid` and `*.import`; never commit `.godot/`.
@@ -138,7 +138,7 @@ None of these in per-frame paths: LINQ, capturing lambdas, string building or fo
 - Name tests `Method_Scenario_Expected`, Arrange/Act/Assert. Deterministic: inject `IClock`, seed `RngStream`, never sleep.
 - **Fakes, not mocks.** No FluentAssertions.
 - Generators get invariant tests across many seeds; saves get round-trip and migration fixture tests; content is validated against the real `content/` folder; hot paths get allocation tests.
-- **Godot runtime tests** (`[GodotTest]` in `tests/godot`) cover scenes loading, screens in the live tree (0 B/frame), and `res://` content. A runtime test fails on any engine error it triggers.
+- **Godot runtime tests** (`[GodotTest]` in `tests/godot`) cover scenes loading, screens in the live tree (0 B/frame), and `res://` content. They load scenes through `context.Scene` or `context.Instantiate`, never `ResourceLoader`. A runtime test fails on any engine error it triggers.
 
 ## Localization (__LOCALES__)
 

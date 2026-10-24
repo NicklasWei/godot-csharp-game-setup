@@ -17,7 +17,7 @@ public sealed class TitleScreenTests
     public static async Task TitleScreen_ShowsTheBuildVersion(GodotTestContext context)
     {
         // Arrange
-        TitleScreen title = GodotTestContext.Instantiate<TitleScreen>(ScenePath);
+        TitleScreen title = context.Instantiate<TitleScreen>(ScenePath);
         title.Initialize(TestServices.Create());
 
         // Act
@@ -33,7 +33,7 @@ public sealed class TitleScreenTests
     public static async Task TitleScreen_Idle_AllocatesNothingPerFrame(GodotTestContext context)
     {
         // Arrange
-        TitleScreen title = GodotTestContext.Instantiate<TitleScreen>(ScenePath);
+        TitleScreen title = context.Instantiate<TitleScreen>(ScenePath);
         title.Initialize(TestServices.Create());
         context.Root.AddChild(title);
         await context.PhysicsFrames(10);

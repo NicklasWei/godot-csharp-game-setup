@@ -16,12 +16,15 @@ namespace __GAME__.RuntimeTests.Runner;
 /// <remarks>
 /// <para>
 /// A test fails when it throws, when it times out, or when Godot logged an engine, script, or shader error while it
-/// ran or in the frame after (captured by <see cref="EngineErrorCapture"/>).
+/// ran, in the frame after, or while the C# wrappers it left were finalized (captured by
+/// <see cref="EngineErrorCapture"/>). Tests load scenes through <see cref="GodotTestContext.Scene"/>, which holds them
+/// for the run (<see cref="LoadedScenes"/>).
 /// </para>
 /// <para>
 /// Run it headless with <c>"$GODOT_BIN" --headless --path . res://tests/godot/test_runner.tscn</c>. User arguments
-/// after <c>--</c>: <c>--filter=TEXT</c> runs only tests whose full name contains TEXT, and <c>--junit=PATH</c>
-/// writes a JUnit XML report for CI.
+/// after <c>--</c>: <c>--filter=TEXT</c> runs only tests whose full name contains TEXT, <c>--junit=PATH</c> writes a
+/// JUnit XML report for CI, and <c>--gc-stress</c> holds every wrapper a test leaves for the GC collected but
+/// unfinalized through the next test (<see cref="FinalizerGate"/>).
 /// </para>
 /// </remarks>
 public sealed partial class GodotTestRunner : Node
@@ -34,6 +37,15 @@ public sealed partial class GodotTestRunner : Node
 
     /// <summary>The JUnit report argument prefix.</summary>
     private const string JUnitPrefix = "--junit=";
+
+    /// <summary>The argument that parks the finalizer thread between tests (<see cref="FinalizerGate"/>).</summary>
+    private const string GcStressArgument = "--gc-stress";
+
+    /// <summary>The most collect-and-finalize rounds <see cref="SettleFinalizers"/> runs.</summary>
+    private const int MaxSettleRounds = 8;
+
+    /// <summary>The start of the failure for errors Godot logged.</summary>
+    private const string LoggedErrors = "Godot logged errors: ";
 
     /// <summary>Where results are printed.</summary>
     private readonly GodotLog _log = new(LogLevel.Info);
@@ -95,6 +107,38 @@ public sealed partial class GodotTestRunner : Node
     }
 
     /// <summary>
+    /// Collects and finalizes every C# wrapper left for the GC while the main thread waits, so that none a test left
+    /// is finalized during a later one.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Godot's C# glue has a race here (godot#112067, open as of 4.8-dev7; ADR 0006). A <c>RefCounted</c> object whose
+    /// only owner is a C# wrapper the GC has collected but not yet finalized gets a broken instance binding if native
+    /// code references it in that window, as a scene load does when the resource cache still has it. Its next
+    /// reference, or its free, then logs <c>Handle is not initialized</c>, failing whichever test is running.
+    /// Finalizing here, with nothing else running, shuts that window between tests, and counts a finalizer's errors
+    /// against the test that left the wrapper.
+    /// </para>
+    /// <para>
+    /// A finalizer can free the last native owner of other objects, as a scene is of its materials, and their wrappers
+    /// only then become collectable, so rounds repeat until one frees no Godot object.
+    /// </para>
+    /// </remarks>
+    private static void SettleFinalizers()
+    {
+        for (int round = 0; round < MaxSettleRounds; round++)
+        {
+            double objects = Performance.GetMonitor(Performance.Monitor.ObjectCount);
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            if (Performance.GetMonitor(Performance.Monitor.ObjectCount) >= objects)
+            {
+                return;
+            }
+        }
+    }
+
+    /// <summary>
     /// Formats a failure for the report.
     /// </summary>
     /// <param name="exception">The failure.</param>
@@ -151,14 +195,29 @@ public sealed partial class GodotTestRunner : Node
         OS.AddLogger(capture);
         List<MethodInfo> tests = Discover(ReadArgument(FilterPrefix));
         var results = new List<TestResult>(tests.Count);
+        var scenes = new LoadedScenes();
+        SettleFinalizers();
+        FinalizerGate? gate = OS.GetCmdlineUserArgs().Contains(GcStressArgument) ? FinalizerGate.Close() : null;
         foreach (MethodInfo test in tests)
         {
-            TestResult result = await RunOneAsync(test, capture);
+            TestResult result = await RunOneAsync(test, capture, scenes, gate);
             results.Add(result);
             _log.Info(
                 LogCategory,
                 result.Failure is null ? $"PASS {FullName(test)}" : $"FAIL {FullName(test)}: {result.Failure}"
             );
+        }
+
+        // Free the run's scenes, and finalize what that and the last test left, while errors still count.
+        scenes.Release();
+        gate?.Dispose();
+        SettleFinalizers();
+        string[] errors = capture.Take();
+        if (errors.Length > 0)
+        {
+            string failure = LoggedErrors + string.Join(" | ", errors);
+            results.Add(new TestResult(nameof(GodotTestRunner), "Teardown", failure, 0));
+            _log.Info(LogCategory, $"FAIL {nameof(GodotTestRunner)}.Teardown: {failure}");
         }
 
         int failed = results.Count(result => result.Failure is not null);
@@ -178,12 +237,19 @@ public sealed partial class GodotTestRunner : Node
     /// </summary>
     /// <param name="test">The test method.</param>
     /// <param name="capture">The engine error capture.</param>
+    /// <param name="scenes">The scenes loaded for the run.</param>
+    /// <param name="gate">The finalizer gate, in a stress run.</param>
     /// <returns>The result.</returns>
-    private async Task<TestResult> RunOneAsync(MethodInfo test, EngineErrorCapture capture)
+    private async Task<TestResult> RunOneAsync(
+        MethodInfo test,
+        EngineErrorCapture capture,
+        LoadedScenes scenes,
+        FinalizerGate? gate
+    )
     {
         var container = new Node { Name = test.Name };
         AddChild(container);
-        var context = new GodotTestContext(container);
+        var context = new GodotTestContext(container, scenes);
         capture.Take();
         var stopwatch = Stopwatch.StartNew();
         string? failure = null;
@@ -220,13 +286,23 @@ public sealed partial class GodotTestRunner : Node
             failure = Describe(exception);
         }
 
-        // One more frame, so deferred calls and frees run while their errors still count against this test.
+        // One more frame, so deferred calls and frees run while their errors still count against this test; then the
+        // wrappers it left are finalized, before the next test can load anything (godot#112067).
         container.QueueFree();
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+        if (gate is null)
+        {
+            SettleFinalizers();
+        }
+        else
+        {
+            gate.Step();
+        }
+
         string[] errors = capture.Take();
         if (failure is null && errors.Length > 0)
         {
-            failure = "Godot logged errors: " + string.Join(" | ", errors);
+            failure = LoggedErrors + string.Join(" | ", errors);
         }
 
         return new TestResult(test.DeclaringType?.Name ?? "?", test.Name, failure, stopwatch.Elapsed.TotalSeconds);
