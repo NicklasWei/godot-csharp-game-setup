@@ -54,7 +54,7 @@ References are for mood and principles, never for copying, and temp tracks used 
 
 | | |
 |---|---|
-| **Genre and style** | <!-- e.g. orchestral, darksynth, lo-fi hip hop, chiptune, folk; or "no music" --> |
+| **Genre and style** | <!-- e.g. orchestral, metal, lo-fi hip hop, chiptune, folk; or "no music" --> |
 | **Mood** | <!-- how it should make the player feel, and how that changes over the game --> |
 | **Instrumentation** | <!-- the instruments or synths that define it --> |
 | **Tempo and key** | <!-- e.g. 90–120 BPM, mostly minor keys (tunable) --> |
