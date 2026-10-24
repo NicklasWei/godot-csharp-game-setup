@@ -18,8 +18,8 @@ This skill turns "let's make a game" into a strictly managed Godot 4 (.NET) repo
 recorded decisions, and a scaffold where formatting, docs, tests, localization, content validation, allocation budgets,
 and a generated wiki are all enforced by tools from the first commit.
 
-Everything here was distilled from a real Godot 4.8 .NET game built with Claude over several phases (DATA DRIFT), and
-the scaffold is verified end to end (build, tests, coverage, headless Godot, wiki). It makes no assumption about genre:
+Everything here was distilled from a real Godot 4.8 .NET game built with Claude over several phases, and the scaffold
+is verified end to end (build, tests, coverage, headless Godot, wiki). It makes no assumption about genre:
 it decides tooling, structure, and quality gates, and leaves gameplay architecture to the game's own ADRs.
 
 ## Workflow
@@ -152,7 +152,9 @@ GitHub one, with actions checkout/setup-dotnet v4, upload-pages-artifact v3, dep
 first pipeline. Newer versions are usually fine; after bumping any, scaffold a throwaway project and rerun
 [references/verification.md](references/verification.md) before trusting it. When a scaffolded project learns
 something the template should know, update the template; add to `references/lessons-learned.md` only a
-hard-to-catch gotcha that the template change doesn't solve outright (its introduction has the bar).
+hard-to-catch gotcha that the template change doesn't solve outright (its introduction has the bar). Describe what a
+game taught in anonymized, general terms: never name or identify the game or its repository, in files, commits, or
+pull requests, since it may be under NDA (this repository's `CLAUDE.md`).
 
 **Template files never start with a dot.** Skill uploads drop every path segment that starts with `.` (in one upload,
 all 22 template dotfiles vanished and the scaffold still reported success). Store them as `_dot_<name>`, in folder
