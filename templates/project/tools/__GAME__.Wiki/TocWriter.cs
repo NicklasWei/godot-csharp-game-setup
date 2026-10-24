@@ -18,6 +18,7 @@ internal static class TocWriter
     [
         "GDD.md",
         "ART_DIRECTION.md",
+        "AUDIO.md",
         "CODING_STANDARDS.md",
         "IMPLEMENTATION_PLAN.md",
     ];

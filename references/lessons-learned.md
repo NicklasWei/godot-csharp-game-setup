@@ -1,8 +1,13 @@
 # Lessons learned
 
-Each entry is something that cost real time in the project this skill was distilled from (a Godot 4.8 .NET game
-built with Claude), with the rule that prevents it. The templates already apply every rule marked **(templated)**;
-the rest are for you to apply as the game grows.
+Each entry is a hard-to-catch gotcha that cost real time in the project this skill was distilled from (a Godot 4.8
+.NET game built with Claude), with the rule that prevents it. The templates already apply every rule marked
+**(templated)**, and the entry says why, so the guard isn't loosened later; the rest are for you to apply as the game
+grows.
+
+Add an entry only for a gotcha like that: easy to walk into, and costly unless planned for. When a change to the
+templates or another reference solves a problem outright (a new doc, a scaffold file, a checklist item), make that
+change and add no entry here. This file is read into context, so every entry has a cost.
 
 ## Contents
 

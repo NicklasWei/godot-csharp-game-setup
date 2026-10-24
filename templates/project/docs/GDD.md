@@ -2,12 +2,13 @@
 
 > **Status:** Living document, pre-production.
 > All numbers marked *(tunable)* are starting values for playtesting, not commitments.
-> Related: [Art Direction](ART_DIRECTION.md) · [Coding Standards](CODING_STANDARDS.md) · [Implementation Plan](IMPLEMENTATION_PLAN.md)
+> Related: [Art Direction](ART_DIRECTION.md) · [Audio Direction](AUDIO.md) · [Coding Standards](CODING_STANDARDS.md) · [Implementation Plan](IMPLEMENTATION_PLAN.md)
 
 <!--
 How to fill this in: write what the game IS, in short declarative sentences. Every system gets numbers (marked
 tunable), every name goes into the lexicon first, and every open decision goes into §17 rather than staying vague in
-the text. Delete sections the game doesn't need; add game-specific ones after §8.
+the text. Delete sections the game doesn't need (never Audio: a game without music or voice says so); add
+game-specific ones after §8.
 -->
 
 ---
@@ -21,6 +22,8 @@ the text. Delete sections the game doesn't need; add game-specific ones after §
 | **Inspirations** | <!-- 3–6 games, each with what is taken from it --> |
 | **Platforms** | <!-- e.g. Windows, Linux. Name the minimum-spec target hardware. --> |
 | **Input** | <!-- e.g. controller-first, full mouse and keyboard parity; or mouse-first --> |
+| **Music and sound** | <!-- music genre and style, and the sound-effect style, in a line each (Audio Direction §4, §5) --> |
+| **Voice** | <!-- the voice model (full, partial, barks, efforts only, gibberish, sound-effect speech, synthesized, or none) and the voice languages (Audio Direction §7) --> |
 | **Engine** | Godot (.NET) with C# |
 | **Players** | <!-- single-player / local co-op / online --> |
 | **Session length** | <!-- a typical play session or run, in minutes (tunable) --> |
@@ -126,6 +129,13 @@ in Core (ContentKinds.All) and pages in the wiki. -->
 ---
 
 ## 14. Audio
+
+The full audio direction is in [Audio Direction](AUDIO.md): music, sound effects, ambience, voice, UI sound, the mix,
+and the cue list.
+
+<!-- Summarize the binding points in a few bullets: the music's style and how it adapts, the sound-effect style, the
+voice model and its languages, the buses, the loudness target, and every audio rule that affects play or fairness
+(e.g. every telegraph is both seen and heard). AUDIO.md owns the detail; keep the two in step. -->
 
 ---
 

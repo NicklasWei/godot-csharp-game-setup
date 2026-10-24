@@ -28,6 +28,7 @@ assets/_dot_gitkeep
 content/schemas/_dot_gitkeep
 dev/_dot_gitkeep
 docs/ART_DIRECTION.md
+docs/AUDIO.md
 docs/CODING_STANDARDS.md
 docs/GDD.md
 docs/IMPLEMENTATION_PLAN.md

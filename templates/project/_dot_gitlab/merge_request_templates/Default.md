@@ -17,5 +17,5 @@
 - [ ] No new per-frame allocations in gameplay paths
 - [ ] Content validates; no IDs renamed
 - [ ] The wiki builds with `--strict`
-- [ ] Docs updated if design, look, or architecture changed (GDD, art direction, standards, ADR)
+- [ ] Docs updated if design, look, sound, or architecture changed (GDD, art direction, audio direction, standards, ADR)
 - [ ] Implementation plan checkboxes updated

@@ -2,7 +2,7 @@
 
 > **Status:** Living document. **Current phase: Phase 0 (Foundation).**
 > Tick checkboxes as work lands (part of the [Definition of Done](CODING_STANDARDS.md#15-definition-of-done)).
-> Related: [GDD](GDD.md) · [Art Direction](ART_DIRECTION.md) · [Coding Standards](CODING_STANDARDS.md)
+> Related: [GDD](GDD.md) · [Art Direction](ART_DIRECTION.md) · [Audio Direction](AUDIO.md) · [Coding Standards](CODING_STANDARDS.md)
 
 ---
 
@@ -31,7 +31,7 @@
 | **4 · Meta and front end** ⟵ **MVP** | Menus, settings, saves, progression | Complete loop: play → finish → progress → play again; saves round-trip |
 | **5 · Art and tech-art** | Full visual style | Look-dev QA passes; budgets hold on minimum-spec hardware |
 | **6 · Content** | Content to release targets | GDD §16 targets met |
-| **7 · Audio** | Music and SFX | Every event has sound; mix passes |
+| **7 · Audio** | Music, SFX, ambience, voice, and the mix ([Audio Direction](AUDIO.md)) | Every event has sound; the music adapts as designed; the mix meets its loudness target (−24 LUFS by default); the audio QA checklist passes |
 | **8 · Localization and accessibility** | All locales, accessibility settings | All locales complete; accessibility checklist passes |
 | **9 · Polish and ship** | Performance, stability, exports | Release candidates for every platform |
 
@@ -46,7 +46,7 @@ Each spike is time-boxed and ends in an ADR.
 | **S1** ✅ | Which Godot-runtime test approach works with this Godot and .NET version? | 0 | — | ADR 0006: the in-repo headless runner (from the template) |
 | **S2** | Can CI run headless Godot .NET (download, import, boot, runtime tests) on the chosen host? | 0 | 1 day | ADR 0006 once the pipeline is green |
 | **S3** | Does the chosen renderer fit the minimum-spec budget with the planned look? | 1 | 1 day | |
-| <!-- S4 --> | <!-- e.g. collision approach at the expected entity count; streaming if the world is continuous; save model --> | | | |
+| <!-- S4 --> | <!-- e.g. collision approach at the expected entity count; streaming if the world is continuous; save model; adaptive music (Godot's interactive and synchronized streams, or middleware) --> | | | |
 
 ---
 
@@ -71,6 +71,7 @@ Each spike is time-boxed and ends in an ADR.
 **Design docs:**
 - [ ] GDD: overview, pillars, lexicon, loops, controls, and open questions filled in.
 - [ ] Art Direction: keywords, readability rules, palette roles, performance budgets.
+- [ ] Audio Direction: keywords and references, music style and genre, sound-effect style, ambience, the voice model and its languages, UI sound, and the buses (§1–§8, §10.1). "None" is an answer; a blank is not.
 - [ ] This plan: phases after Phase 1 reshaped for the game; spikes listed.
 - [ ] ADRs for any decision already made beyond the template's (renderer, 2D/3D, transitions, platforms).
 - [ ] `CLAUDE.md` status updated to Phase 1.
@@ -90,7 +91,8 @@ Each spike is time-boxed and ends in an ADR.
 - [ ] Debug overlay: FPS, frame times, allocated bytes per frame.
 - [ ] A runtime test runs the slice at 0 B/frame.
 - [ ] Benchmark flag measuring against the §14 budgets (spike S3).
-- [ ] Placeholder audio and the post stack, if they matter to feel.
+- [ ] Placeholder audio for the slice's events (and a music loop, if the game has music) on the buses from [Audio Direction §10.1](AUDIO.md#101-buses), with the bus layout pinned by a file-based test.
+- [ ] The post stack, if it matters to feel.
 
 **Exit criteria:** the slice runs at the frame budget with 0 B/frame, and a feel playtest passes.
 

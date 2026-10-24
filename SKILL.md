@@ -26,7 +26,9 @@ it decides tooling, structure, and quality gates, and leaves gameplay architectu
 
 1. **Interview** the user: only what can't be defaulted. The questions and defaults are in
    [references/planning.md](references/planning.md) §1. At minimum before scaffolding: title and PascalCase
-   identifier, Godot version, code host (GitLab or GitHub), languages, 2D or 3D and the renderer.
+   identifier, Godot version, code host (GitLab or GitHub), languages, 2D or 3D and the renderer. Before Phase 1,
+   the rest of §1, **including sound**: music style and references, sound effects, ambience, and the voice model with
+   its languages. A setup isn't complete without them, and "none" is an answer.
 2. **Check the toolchain** on this machine:
    - `dotnet --list-sdks`: a .NET SDK whose major version matches the target framework.
    - The target framework must be at least what that Godot version's `GodotSharp` package targets (Godot 4.8 ships only
@@ -51,9 +53,9 @@ it decides tooling, structure, and quality gates, and leaves gameplay architectu
    restores the local tools, and runs CSharpier (which also sorts `using`s for the game's name).
 4. **Verify** with [references/verification.md](references/verification.md): every gate green, then each gate broken
    once on purpose and reverted. Report results faithfully, including anything you couldn't run.
-5. **Fill the docs** (GDD, Art Direction, Implementation Plan) and write ADRs for decisions already made, following
-   [references/planning.md](references/planning.md). Update the project's `CLAUDE.md` (one-line description, status,
-   `GODOT_BIN` path).
+5. **Fill the docs** (GDD, Art Direction, Audio Direction, Implementation Plan) and write ADRs for decisions already
+   made, following [references/planning.md](references/planning.md). Update the project's `CLAUDE.md` (one-line
+   description, status, `GODOT_BIN` path).
 6. **Hand off what needs the user's accounts**: creating the remote, protecting `main`, enabling Pages. If the user
    does git writes by hand (check memory or ask), give the git commands as separate code blocks instead of running them.
 
@@ -84,29 +86,10 @@ game/                         Main (composition root), AppServices, GodotLog, Go
 localization/                 en.po plus one fuzzy PO per locale
 content/schemas/              Generated JSON Schemas (none until the first content kind)
 tools/<Game>.Wiki, tools/wiki Wiki generator and DocFX site; .claude/launch.json previews it
-docs/                         GDD, ART_DIRECTION, CODING_STANDARDS (the binding rules), IMPLEMENTATION_PLAN,
-                              adr/ 0001–0010 recording the template's own decisions
+docs/                         GDD, ART_DIRECTION, AUDIO (music, effects, ambience, voice, mix), CODING_STANDARDS
+                              (the binding rules), IMPLEMENTATION_PLAN, adr/ 0001–0010 recording the template's own
+                              decisions
 ```
-
-## The rules that matter most
-
-The full text is the scaffolded `docs/CODING_STANDARDS.md`; these are the ones to keep in mind when planning:
-
-- **Game rules live in Core, unit-tested; Godot nodes are views.** Core never references Godot. A stage's simulation
-  is one Core session stepped in a fixed order; nodes read input, call it, and present it.
-- **Dependencies flow down:** `Main` builds services and passes them through `Initialize(...)` before `AddChild`. No
-  mutable statics, at most one autoload, no service locator. Call down, signal up with C# events.
-- **Tools enforce everything they can:** warnings as errors, XML docs on every member (they become the wiki), banned
-  APIs, CSharpier, exact SDK pins in global.json and CI.
-- **Tests cover the project files too:** the input map's parity, scene text keys, PO catalogs, content, and schemas
-  are checked as data in milliseconds; the runtime runner fails on any engine error and checks 0 B/frame.
-- **Deterministic by default:** seeded `RngStream`s per consumer; time through `IClock`.
-- **Data-driven:** content kinds registered once in `ContentKinds.All`; IDs permanent; unknown JSON properties are
-  errors; schemas generated; tunables in content, not in `[Export]`s.
-- **Localized from day one:** stable PO keys, `en.po` as the source of truth, fuzzy until translated.
-- **Zero managed allocations per gameplay frame**, enforced by runtime tests.
-- **The docs can't drift:** the wiki is generated from code and built with `--strict` in CI; design docs and ADRs are
-  updated in the same change; spikes end in ADRs with numbers.
 
 ## Lessons that cost the most
 
@@ -150,7 +133,7 @@ to raise during planning, because they're expensive to change later:
 
 | File | Read when |
 |---|---|
-| [references/planning.md](references/planning.md) | Before scaffolding (the interview) and when writing the GDD, art direction, plan, ADRs, CLAUDE.md |
+| [references/planning.md](references/planning.md) | Before scaffolding (the interview) and when writing the GDD, art direction, audio direction, plan, ADRs, CLAUDE.md |
 | [references/adapting.md](references/adapting.md) | The game differs from the defaults (2D, renderer, collision, continuous world, multiplayer, input, exports), or retrofitting an existing project |
 | [references/verification.md](references/verification.md) | Right after scaffolding, and after upgrading Godot or the SDK |
 | [references/wiki.md](references/wiki.md) | Working on the wiki: what each page comes from, strict checks, adding pages, DocFX problems |
@@ -168,7 +151,8 @@ YAML but weren't run on GitLab or GitHub from the template (the GitLab one mirro
 GitHub one, with actions checkout/setup-dotnet v4, upload-pages-artifact v3, deploy-pages v4, is a port), so watch the
 first pipeline. Newer versions are usually fine; after bumping any, scaffold a throwaway project and rerun
 [references/verification.md](references/verification.md) before trusting it. When a scaffolded project learns
-something the template should know, update the template and `references/lessons-learned.md` here too.
+something the template should know, update the template; add to `references/lessons-learned.md` only a
+hard-to-catch gotcha that the template change doesn't solve outright (its introduction has the bar).
 
 **Template files never start with a dot.** Skill uploads drop every path segment that starts with `.` (in one upload,
 all 22 template dotfiles vanished and the scaffold still reported success). Store them as `_dot_<name>`, in folder

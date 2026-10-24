@@ -384,7 +384,10 @@ def main() -> None:
     print(f"  2. dotnet build {name}.sln  &&  dotnet test --project tests/{name}.Core.Tests")
     print('  3. "$GODOT_BIN" --headless --path . --import   (then the boot and runtime-test commands in CLAUDE.md)')
     print("  4. sh tools/wiki/build.sh --strict  (or build.ps1 -Strict)")
-    print("  5. Fill in docs/GDD.md, docs/ART_DIRECTION.md, and docs/IMPLEMENTATION_PLAN.md with the game's specifics.")
+    print(
+        "  5. Fill in docs/GDD.md, docs/ART_DIRECTION.md, docs/AUDIO.md, and docs/IMPLEMENTATION_PLAN.md with the game's"
+        " specifics."
+    )
 
 
 if __name__ == "__main__":

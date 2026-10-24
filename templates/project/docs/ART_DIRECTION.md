@@ -1,7 +1,7 @@
 # __TITLE__ — Art Direction & Tech-Art Bible
 
 > **Status:** Living document, pre-production.
-> Related: [GDD](GDD.md) · [Coding Standards](CODING_STANDARDS.md) · [Implementation Plan](IMPLEMENTATION_PLAN.md)
+> Related: [GDD](GDD.md) · [Audio Direction](AUDIO.md) · [Coding Standards](CODING_STANDARDS.md) · [Implementation Plan](IMPLEMENTATION_PLAN.md)
 
 <!--
 How to fill this in: decide the look with references first (§1, §16), then turn it into rules a shader or an artist

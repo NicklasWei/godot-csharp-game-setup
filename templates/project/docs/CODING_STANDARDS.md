@@ -2,7 +2,7 @@
 
 > **Status:** Binding. [CLAUDE.md](../CLAUDE.md) summarizes the rules; this document is the full reference.
 > If a rule blocks you, change it here deliberately (with an ADR if it's architectural, §3.11). Don't quietly work around it.
-> Related: [GDD](GDD.md) · [Art Direction](ART_DIRECTION.md) · [Implementation Plan](IMPLEMENTATION_PLAN.md)
+> Related: [GDD](GDD.md) · [Art Direction](ART_DIRECTION.md) · [Audio Direction](AUDIO.md) · [Implementation Plan](IMPLEMENTATION_PLAN.md)
 
 Items marked **(verify)** depend on tool or engine behavior that hasn't been confirmed yet. Decisions are recorded in [docs/adr/](adr/README.md).
 
@@ -58,7 +58,7 @@ dev/                       Look-dev and sandbox scenes. Excluded from export.
 tools/                     Scripts and dev tools. Has .gdignore.
   __GAME__.Wiki/           Developer wiki generator (ADR 0008)
   wiki/                    DocFX site config and build scripts; generated/ and _site/ are gitignored
-docs/                      GDD, art direction, standards, plan, adr/. Has .gdignore.
+docs/                      GDD, art direction, audio direction, standards, plan, adr/. Has .gdignore.
 ```
 
 **Rules:**
@@ -331,7 +331,7 @@ private Label _buildLabel = null!;
 
 Document **intent, units, and invariants**, not the name restated. "Gets the speed." fails; "Gets the forward speed in m/s, clamped to [MinSpeed, MaxSpeed]." passes. These summaries are also the wiki's descriptions (§13).
 
-When a change alters design, look, architecture, or a standard, update the doc in the **same** change: the GDD, the art direction, this file, an ADR, and the implementation plan's checkboxes.
+When a change alters design, look, sound, architecture, or a standard, update the doc in the **same** change: the GDD, the art direction, the audio direction, this file, an ADR, and the implementation plan's checkboxes.
 
 ---
 
@@ -529,4 +529,4 @@ A change is done when **all** of these hold:
 - [ ] No new per-frame allocations in gameplay paths.
 - [ ] Content validates; IDs are new or unchanged, never renamed.
 - [ ] The wiki builds with `--strict`.
-- [ ] Docs are updated if design, look, or architecture changed (GDD, art direction, standards, ADR), and the implementation plan checkboxes are ticked.
+- [ ] Docs are updated if design, look, sound, or architecture changed (GDD, art direction, audio direction, standards, ADR), and the implementation plan checkboxes are ticked.
