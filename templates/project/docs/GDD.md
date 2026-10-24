@@ -7,8 +7,9 @@
 <!--
 How to fill this in: write what the game IS, in short declarative sentences. Every system gets numbers (marked
 tunable), every name goes into the lexicon first, and every open decision goes into §17 rather than staying vague in
-the text. Delete sections the game doesn't need (never Audio: a game without music or voice says so); add
-game-specific ones after §8.
+the text. Keep it on game design: the look and the sound get a brief overview at most, and their detail lives in
+ART_DIRECTION.md and AUDIO.md. Delete sections the game doesn't need (never Audio: a game without music or voice says
+so); add game-specific ones after §8.
 -->
 
 ---
@@ -47,7 +48,8 @@ game-specific ones after §8.
 
 ## 2. Setting and fantasy
 
-<!-- The world, the player's role, the tone. Keep it short; the lexicon carries the names. -->
+<!-- The world, the player's role, the tone. Keep it short: the lexicon carries the names, and the Art and Audio
+Directions the look and the sound. -->
 
 ---
 
@@ -133,9 +135,10 @@ in Core (ContentKinds.All) and pages in the wiki. -->
 The full audio direction is in [Audio Direction](AUDIO.md): music, sound effects, ambience, voice, UI sound, the mix,
 and the cue list.
 
-<!-- Summarize the binding points in a few bullets: the music's style and how it adapts, the sound-effect style, the
-voice model and its languages, the buses, the loudness target, and every audio rule that affects play or fairness
-(e.g. every telegraph is both seen and heard). AUDIO.md owns the detail; keep the two in step. -->
+<!-- A brief overview for a base understanding, two or three sentences at most: the music's style and how it adapts,
+the sound-effect style, and whether anything is voiced. Everything else (rules, the mix, loudness, the cue list)
+lives in AUDIO.md, so the GDD stays on game design. A fairness rule that involves sound, such as a telegraph that is
+both seen and heard, still belongs in §12. -->
 
 ---
 
