@@ -114,7 +114,11 @@ offer options rather than open questions.
   an ADR.
 - **The bus layout comes with the first sound** (Phase 1 placeholders): Master, Music, SFX, Ambience, UI, and Voice if
   anything is spoken, pinned by a file-based test.
-- **Budgets and loudness** (§10.3, §14) are set for the minimum-spec device and measured in the audio phase.
+- **Loudness has a default:** −24 LUFS integrated (±2 LU) with a true peak at or below −1 dBTP (§10.3), Sony's
+  recommendation for console games (ASWG-R001). PC has no platform standard, so keep it unless a platform needs
+  otherwise (mobile usually runs louder, around −18 LUFS). Measure it in the audio phase from a movie-writer capture
+  with an ITU-R BS.1770 meter (ffmpeg's `ebur128` filter).
+- **Audio budgets** (§14) are set for the minimum-spec device and measured in the audio phase.
 
 ## 6. Phases and exit criteria
 

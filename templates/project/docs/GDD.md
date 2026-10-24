@@ -134,8 +134,8 @@ The full audio direction is in [Audio Direction](AUDIO.md): music, sound effects
 and the cue list.
 
 <!-- Summarize the binding points in a few bullets: the music's style and how it adapts, the sound-effect style, the
-voice model and its languages, the buses, and every audio rule that affects play or fairness (e.g. every telegraph
-is both seen and heard). AUDIO.md owns the detail; keep the two in step. -->
+voice model and its languages, the buses, the loudness target, and every audio rule that affects play or fairness
+(e.g. every telegraph is both seen and heard). AUDIO.md owns the detail; keep the two in step. -->
 
 ---
 

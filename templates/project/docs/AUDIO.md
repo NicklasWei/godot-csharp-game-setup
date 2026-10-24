@@ -212,10 +212,19 @@ dialogue ducks music; in-game menus duck or filter the game. -->
 
 ### 10.3 Loudness
 
-<!-- A target integrated loudness and true peak, measured over a typical session. A common reference for console
-games is -24 LUFS integrated (±2 LU) with a true peak at or below -1 dBTP (Sony's ASWG-R001); PC has no platform
-standard, and mobile usually runs louder. Check the mix on the minimum-spec device's speakers and on headphones.
-Offer a reduced dynamic range option ("night mode") if the game is very dynamic. -->
+**Target:** **−24 LUFS integrated (±2 LU)**, with a **true peak at or below −1 dBTP**, measured over a typical stretch of play. This is Sony's recommendation for console games (ASWG-R001), which the IESD recommendations follow. PC has no platform standard, so the console one is the default.
+
+- **Measuring:** record the game's mix with Godot's movie writer (a `.avi` path for `--write-movie` keeps the audio in the file; a `.png` path writes it as `f.wav`), then run an ITU-R BS.1770 meter over it. ffmpeg has one:
+
+  ```bash
+  ffmpeg -nostats -i run.avi -vn -af ebur128=peak=true -f null -
+  ```
+
+  In its summary, `I:` is the integrated loudness in LUFS and `Peak:` the true peak in dBFS, which is dBTP.
+- **Check by ear** on the minimum-spec device's speakers and on headphones.
+
+<!-- Keep the default unless a platform needs otherwise (mobile usually runs louder, around -18 LUFS), and record why
+here. Offer a reduced dynamic range option ("night mode") if the game is very dynamic. -->
 
 ---
 
@@ -274,7 +283,7 @@ buses. The audio phase: final assets, the mix, the loudness target, and the chec
 - [ ] The most repeated sounds don't tire the ear over a long session.
 - [ ] Music transitions land musically, and nothing cuts off abruptly.
 - [ ] Dialogue is intelligible over music and effects, and subtitles match it (if the game is voiced).
-- [ ] The mix meets its loudness target with no clipping, on the minimum-spec device's speakers and on headphones.
+- [ ] The mix meets its loudness target (−24 LUFS integrated ±2 LU, true peak at or below −1 dBTP, §10.3) with no clipping, and sounds right on the minimum-spec device's speakers and on headphones.
 - [ ] Each bus's volume slider works on its own.
 
 ---

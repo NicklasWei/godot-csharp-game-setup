@@ -31,7 +31,7 @@
 | **4 · Meta and front end** ⟵ **MVP** | Menus, settings, saves, progression | Complete loop: play → finish → progress → play again; saves round-trip |
 | **5 · Art and tech-art** | Full visual style | Look-dev QA passes; budgets hold on minimum-spec hardware |
 | **6 · Content** | Content to release targets | GDD §16 targets met |
-| **7 · Audio** | Music, SFX, ambience, voice, and the mix ([Audio Direction](AUDIO.md)) | Every event has sound; the music adapts as designed; the mix meets its loudness target; the audio QA checklist passes |
+| **7 · Audio** | Music, SFX, ambience, voice, and the mix ([Audio Direction](AUDIO.md)) | Every event has sound; the music adapts as designed; the mix meets its loudness target (−24 LUFS by default); the audio QA checklist passes |
 | **8 · Localization and accessibility** | All locales, accessibility settings | All locales complete; accessibility checklist passes |
 | **9 · Polish and ship** | Performance, stability, exports | Release candidates for every platform |
 
