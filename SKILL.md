@@ -125,9 +125,6 @@ to raise during planning, because they're expensive to change later:
 - **Land the wiki in Phase 0.** The source project built its wiki late on a side branch, and it was never merged.
 - **Pin the SDK exactly**: a floating CI image brought new analyzers that failed only in CI.
 - **Measure allocations with tests**, not the overlay: a per-kill string format slipped past 4 Hz sampling.
-- **Give audio its own doc from Phase 0.** The source project kept audio in one short GDD section, and its decisions
-  drifted across the plan, ADRs, and code. Settle the music style, effects, ambience, and the voice model (with its
-  languages) in the Audio Direction during planning.
 
 ## Recipes for a scaffolded project
 
@@ -174,7 +171,8 @@ YAML but weren't run on GitLab or GitHub from the template (the GitLab one mirro
 GitHub one, with actions checkout/setup-dotnet v4, upload-pages-artifact v3, deploy-pages v4, is a port), so watch the
 first pipeline. Newer versions are usually fine; after bumping any, scaffold a throwaway project and rerun
 [references/verification.md](references/verification.md) before trusting it. When a scaffolded project learns
-something the template should know, update the template and `references/lessons-learned.md` here too.
+something the template should know, update the template; add to `references/lessons-learned.md` only a
+hard-to-catch gotcha that the template change doesn't solve outright (its introduction has the bar).
 
 **Template files never start with a dot.** Skill uploads drop every path segment that starts with `.` (in one upload,
 all 22 template dotfiles vanished and the scaffold still reported success). Store them as `_dot_<name>`, in folder

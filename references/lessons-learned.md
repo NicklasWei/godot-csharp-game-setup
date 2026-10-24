@@ -1,8 +1,13 @@
 # Lessons learned
 
-Each entry is something that cost real time in the project this skill was distilled from (a Godot 4.8 .NET game
-built with Claude), with the rule that prevents it. The templates already apply every rule marked **(templated)**;
-the rest are for you to apply as the game grows.
+Each entry is a hard-to-catch gotcha that cost real time in the project this skill was distilled from (a Godot 4.8
+.NET game built with Claude), with the rule that prevents it. The templates already apply every rule marked
+**(templated)**, and the entry says why, so the guard isn't loosened later; the rest are for you to apply as the game
+grows.
+
+Add an entry only for a gotcha like that: easy to walk into, and costly unless planned for. When a change to the
+templates or another reference solves a problem outright (a new doc, a scaffold file, a checklist item), make that
+change and add no entry here. This file is read into context, so every entry has a cost.
 
 ## Contents
 
@@ -133,9 +138,8 @@ the rest are for you to apply as the game grows.
 
 - **Transitions are an architecture decision.** The project built scene swaps with fades, then the first end-to-end
   playtest asked for one continuous world with no loading screens. Retrofitting it took a spike and about ten ADRs
-  (streaming, origin rebase, in-world menus, camera hand-overs, and music that carries on through the world instead
-  of restarting at each stage). Decide in planning whether the game is scene-based or continuous, and if continuous,
-  build streaming, local transforms, and origin rebasing from Phase 1.
+  (streaming, origin rebase, in-world menus, camera hand-overs). Decide in planning whether the game is scene-based or
+  continuous, and if continuous, build streaming, local transforms, and origin rebasing from Phase 1.
 - **Simulation order in one Core session**, not spread over node `_PhysicsProcess` methods: tests can pin it, and
   determinism holds. When a second stage kind appears, extract a shared session base before copying code (the
   extraction passed 1,070 unchanged tests).
@@ -159,10 +163,6 @@ the rest are for you to apply as the game grows.
   `--strict`, and land it in Phase 0 so it grows with the code. **(templated: ADR 0008)**
 - **Docs updated in the same change** as the design, look, or architecture change; implementation plan checkboxes
   ticked as work lands. The Definition of Done lists it so it isn't forgotten.
-- **Give audio its own doc from Phase 0.** The project kept audio in one short GDD section while the music direction,
-  the ducking, the bus layout, the cue rules, and an open voice question spread over the GDD, the plan, ADRs, and
-  code comments, so nobody saw the whole until it was gathered into a dedicated audio direction. The template ships
-  `docs/AUDIO.md`, and the interview covers music, effects, ambience, and the voice model. **(templated)**
 - **Keep CLAUDE.md's status short.** The project's status paragraph grew into one run-on sentence covering every
   landed feature. Keep three to five lines; history belongs in the plan and the ADRs.
 
