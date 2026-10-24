@@ -302,6 +302,7 @@ private Label _buildLabel = null!;
 
 - Loaded `Resource`s are shared: **never mutate one at runtime.** Per-object variation uses `instance uniform`s; duplicate once at load only when there's no other way.
 - Preload `PackedScene`s and materials at load time, not mid-gameplay.
+- **Hold a resource loaded by path for as long as anything may load it again.** One held by nothing but a dropped C# wrapper is freed later by the wrapper's finalizer, and a load that takes it from the resource cache between the collection and the finalizer leaves its binding broken (`Handle is not initialized`, godot#112067, [ADR 0006](adr/0006-godot-runtime-tests-and-ci.md)). `Main` holds the game's scenes in `[Export]` fields for the session, and runtime tests load theirs through `GodotTestContext.Scene`.
 - Custom `[GlobalClass]` resources are for editor-authored visual or scene data; gameplay definitions are content JSON.
 
 ### 5.9 Editor tool scripts
@@ -382,6 +383,7 @@ These exist from day one and stay green:
 - **Allocation budget:** each gameplay screen or stage runs at **0 B/frame** under `AllocationProbe` (the template checks the title screen; every new stage adds its own).
 - **Content through `res://`:** the real content loads through Godot's file API.
 - Input-map and scene-key checks are file-based Core tests (faster, no engine).
+- **Scenes come from the context:** tests load scenes with `context.Scene` or `context.Instantiate`, never `ResourceLoader`, so the runner holds them for the run. After each test the runner finalizes the C# wrappers the test left, so none is finalized during a later test; `--gc-stress` holds them unfinalized through the next test instead, to catch a test or view that leaves the race in [ADR 0006](adr/0006-godot-runtime-tests-and-ci.md) open.
 
 ### 7.7 Coverage
 

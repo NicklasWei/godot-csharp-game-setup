@@ -98,6 +98,13 @@ change and add no entry here. This file is read into context, so every entry has
   test per screen)**
 - **Allocation tests were flaky under coverage instrumentation** (a one-time allocation on a first-time path). Take
   the lowest of up to three runs; a real per-call allocation is never zero. **(templated)**
+- **A runtime test failed at random with `Handle is not initialized`** (from `SwapGCHandleForType` or
+  `SetGodotObjectPtr`), and passed alone and on reruns. It's a race in Godot's C# glue (godot#112067, open as of
+  4.8-dev7): a resource held only by a dropped C# wrapper is freed by the wrapper's finalizer some time after the GC
+  collects the wrapper, and a load that takes it from the resource cache in between breaks its binding. Tests that
+  loaded scenes with `ResourceLoader` and dropped them fed it, through the materials and sub-scenes their views hold.
+  Hold loaded scenes for the run, finalize between tests, and check with `--gc-stress`; game code holds what it loads
+  by path. **(templated: ADR 0006, Standards §5.8)**
 - **Check project files as data, in Core tests:** the input map (every action has keyboard/mouse and controller
   bindings, and matches the constants), scene text keys, PO catalogs, registered catalogs, generated schemas. They
   run in milliseconds anywhere and catch most "forgot to update X" mistakes. **(templated)**

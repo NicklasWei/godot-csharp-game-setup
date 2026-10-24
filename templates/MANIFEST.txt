@@ -116,11 +116,13 @@ tests/__GAME__.Core.Tests/_dot_gdignore
 tests/godot/app/MainSceneTests.cs
 tests/godot/common/ContentFilesTests.cs
 tests/godot/runner/EngineErrorCapture.cs
+tests/godot/runner/FinalizerGate.cs
 tests/godot/runner/GodotAssert.cs
 tests/godot/runner/GodotTestAttribute.cs
 tests/godot/runner/GodotTestContext.cs
 tests/godot/runner/GodotTestFailedException.cs
 tests/godot/runner/GodotTestRunner.cs
+tests/godot/runner/LoadedScenes.cs
 tests/godot/scenes/SceneLoadTests.cs
 tests/godot/support/AllocationProbe.cs
 tests/godot/support/RecordingLog.cs

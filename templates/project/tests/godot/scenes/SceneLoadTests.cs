@@ -28,7 +28,7 @@ public sealed class SceneLoadTests
         // Act
         foreach (string path in scenes)
         {
-            Node? instance = ResourceLoader.Load<PackedScene>(path)?.Instantiate();
+            Node? instance = context.TryScene(path, out PackedScene? scene) ? scene.Instantiate() : null;
             if (instance is null)
             {
                 failures.Add(path);
