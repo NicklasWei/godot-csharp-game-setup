@@ -75,6 +75,9 @@ them as defaults, and change one only with an ADR.
 ## 3. Writing the GDD
 
 - Short declarative sentences. Every system gets numbers, marked *(tunable)*.
+- **Keep it on game design.** The look and the sound get a brief overview at most (the tone in §2, a few sentences in
+  §14 Audio), and their detail lives in the Art and Audio Directions, so the GDD never repeats them. A fairness rule
+  that involves them, such as a telegraph that is both seen and heard, still goes in §12.
 - **The lexicon (§3) comes first and is binding.** Every game concept gets one in-world term and one code identifier,
   and the code, keys, UI, and docs use them. Pick terms that read well as identifiers. Forbid the generic synonyms
   explicitly (for example, "Stamina, never Energy or Endurance").
