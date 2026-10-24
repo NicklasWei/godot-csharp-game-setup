@@ -25,7 +25,7 @@ ADR 0008 in the template records the decision; this file is how it works and how
 | Reference | Controls | `InputActionNames.All` with summaries, bindings parsed from `project.godot` |
 | Reference | Dev flags | `DevFlags` properties paired with their `…Argument` / `…Prefix` constants |
 | Reference | Localization | Every PO catalog: per-locale status and every key's English text and state |
-| Design docs | GDD, art direction, standards, plan, ADRs | `docs/**/*.md`, read in place, TOC generated |
+| Design docs | GDD, art direction, audio direction, standards, plan, ADRs | `docs/**/*.md`, read in place, TOC generated |
 | Core API | Every public Core type | The Core assembly and its XML docs (DocFX metadata) |
 | Project overview | CLAUDE.md | Read in place |
 

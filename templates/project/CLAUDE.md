@@ -12,6 +12,7 @@
 |---|---|
 | [docs/GDD.md](docs/GDD.md) | Gameplay, systems, content, and the **lexicon (§3), which is binding for all names** |
 | [docs/ART_DIRECTION.md](docs/ART_DIRECTION.md) | Anything visual: shaders, materials, VFX, UI look, assets, performance budgets |
+| [docs/AUDIO.md](docs/AUDIO.md) | Anything audible: music, sound effects, ambience, voice and its localization, UI sound, the mix and buses, the cue list |
 | [docs/CODING_STANDARDS.md](docs/CODING_STANDARDS.md) | Full rules behind everything below |
 | [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) | What to build next; phase exit criteria; spikes |
 | `docs/adr/` | Past architecture decisions. Add one for any new architectural choice. |
@@ -171,4 +172,4 @@ The wiki is generated from code: content kinds, `…Settings` records, Core enum
 5. No per-frame allocations were introduced.
 6. Content validates, and no IDs were renamed.
 7. The wiki builds with `--strict`.
-8. Docs are updated if the design, look, or architecture changed (GDD, art direction, standards, or an ADR), and the implementation plan checkboxes are ticked.
+8. Docs are updated if the design, look, sound, or architecture changed (GDD, art direction, audio direction, standards, or an ADR), and the implementation plan checkboxes are ticked.
