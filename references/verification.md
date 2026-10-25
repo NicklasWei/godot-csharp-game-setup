@@ -1,14 +1,16 @@
 # Phase 0 verification
 
 Run these after scaffolding, in order, and report the results faithfully. A gate that has never been seen failing
-might not be wired in, so step 4 breaks each one once on purpose. Every command runs from the repository root.
+might not be wired in, so step 5 breaks each one once on purpose. Every command runs from the repository root.
 
 The scaffold was verified this way on Windows with .NET SDK 10.0.401 and `net10.0`, against Godot 4.5.1-stable,
 4.6.1-stable, and 4.8-dev7: zero build warnings (Debug and ExportRelease), 90 Core tests passing at 98.5% Core line
 coverage, a clean headless import and boot, 5 runtime tests passing (0 B/frame on the title screen), and the wiki
 building with `--strict` and DocFX `--warningsAsErrors`; in GitLab, GitHub, English-only, and multi-locale variants,
 and again after adding a sample content kind. The CI files were checked as valid YAML and mirror a pipeline that runs
-green on GitLab, but neither was run on its host from the template: watch the first pipeline closely (step 5).
+green on GitLab, but neither was run on its host from the template: watch the first pipeline closely (step 6). The
+export presets (step 4) were verified on Linux with Godot 4.5.1-stable and 4.8-beta1 and their .NET export templates:
+both release builds, the Core assembly in each data folder, and a clean headless boot of the Linux build.
 
 With [just](https://github.com/casey/just) installed and `GODOT_BIN` set in `.env` (copy `.env.example`), `just ci`
 runs sections 1 to 3 in one go. The steps below are the same gates one at a time.
@@ -77,7 +79,35 @@ sh tools/wiki/build.sh --strict
 with no content kinds, and DocFX reporting 0 warnings and 0 errors. To look at it: add `--serve` and open
 `http://localhost:8080`.
 
-## 4. Prove each gate fails, then revert
+## 4. Exports
+
+A pack-only export needs no export templates and shows what the presets put in the pack. There's no content yet, so
+add a throwaway `content/probe/probe.json` and `content/schemas/probe.schema.json` first, and delete them after:
+
+```bash
+"$GODOT_BIN" --headless --path . --export-pack Linux <scratch>/linux.zip
+```
+
+List the zip: expect the scripts, the scenes' `.remap` files, the PO catalogs, `content/probe/probe.json`,
+`icudt_godot.dat`, and `project.binary`, and nothing from `dev/`, `tests/`, or `content/schemas/`, and no `global.json`
+or `stylecop.json`.
+
+A full export needs the editor version's .NET export templates (about 1.2 GB): Editor → Manage Export Templates, or
+unzip the release's `Godot_v<version>_mono_export_templates.tpz` and put its `templates/` files into
+`export_templates/<the name in its version.txt>/` in Godot's data folder (`~/.local/share/godot/` on Linux,
+`%APPDATA%\Godot\` on Windows). Then, with the throwaway files deleted:
+
+```bash
+just export
+```
+
+Expect `export/windows/` and `export/linux/`, each with the executable, the `.pck`, and a data folder holding
+`<Game>.Core.dll`. The line "Using editor embedded text server data" is a notice about the ICU data (ADR 0005), not an
+error. Boot the Linux build with `./export/linux/<Game>.x86_64 --headless --quit-after 120`: no `ERROR` lines, and the
+content summary in the log. On Windows, start `export\windows\<Game>.exe` and see the title screen (a release build has
+no console).
+
+## 5. Prove each gate fails, then revert
 
 Make each change, run the gate, confirm the failure, and undo the change:
 
@@ -100,7 +130,7 @@ Coverage: temporarily raise `--coverlet-threshold` to a whole number above the r
 confirm the test run fails with exit code 14. A decimal such as `99.9` is rejected as an argument instead: the run
 reports "Zero tests ran", which proves nothing about the gate.
 
-## 5. Remote and CI
+## 6. Remote and CI
 
 These need the user's accounts; give them the steps rather than doing them:
 

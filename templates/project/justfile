@@ -45,6 +45,15 @@ boot: (_godot "--headless" "--path" "." "--quit-after" "120")
 # Run the Godot-runtime tests; extra arguments go to the runner, e.g. just godot-test --filter=Title.
 godot-test *args: (_godot "--headless" "--path" "." "res://tests/godot/test_runner.tscn" "--" args)
 
+# Export a Windows release build to export/windows/ (needs the editor's .NET export templates, ADR 0011).
+export-windows: (_export "Windows" "export/windows/__GAME__.exe")
+
+# Export a Linux release build to export/linux/ (needs the editor's .NET export templates, ADR 0011).
+export-linux: (_export "Linux" "export/linux/__GAME__.x86_64")
+
+# Export release builds for Windows and Linux.
+export: export-windows export-linux
+
 # Build the developer wiki with strict checks, as CI does.
 [unix]
 wiki:
@@ -89,6 +98,22 @@ _godot *args: _need-godot
 [windows]
 _godot *args: _need-godot
     & $env:GODOT_BIN {{ args }}
+
+# Exports a preset from export_presets.cfg to a path, creating its folder first: Godot refuses a missing one.
+[private]
+_export preset path: (_folder parent_directory(path)) (_godot "--headless" "--path" "." "--export-release" preset path)
+
+# Creates a folder and any missing parents.
+[private]
+[unix]
+_folder path:
+    mkdir -p {{ quote(path) }}
+
+# Creates a folder and any missing parents.
+[private]
+[windows]
+_folder path:
+    New-Item -ItemType Directory -Force -Path {{ quote(path) }} | Out-Null
 
 # Fails with a hint when GODOT_BIN isn't set.
 [private]

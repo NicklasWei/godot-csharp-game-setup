@@ -43,7 +43,9 @@ docs/adr/0007-data-driven-content.md
 docs/adr/0008-developer-wiki.md
 docs/adr/0009-deterministic-randomness.md
 docs/adr/0010-justfile-task-runner.md
+docs/adr/0011-export-presets.md
 docs/adr/README.md
+export_presets.cfg
 game/app/AppServices.cs
 game/app/GodotClock.cs
 game/app/GodotLog.cs

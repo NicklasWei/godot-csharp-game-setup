@@ -11,8 +11,8 @@ namespace __GAME__.Game.Common;
 /// <c>System.IO</c> cannot see packed files.
 /// </summary>
 /// <remarks>
-/// Load-time only (boot); never call it per frame. Exports must include <c>content/*</c> as non-resource files,
-/// because JSON isn't a Godot resource.
+/// Load-time only (boot); never call it per frame. The export presets keep <c>content/*</c> in the pack and leave
+/// <c>content/schemas/</c> out (ADR 0011).
 /// </remarks>
 public static class ContentFiles
 {
