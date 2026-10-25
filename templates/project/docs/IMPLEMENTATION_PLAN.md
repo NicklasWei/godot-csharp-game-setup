@@ -61,12 +61,12 @@ Each spike is time-boxed and ends in an ADR.
 - [ ] `dotnet test --project tests/__GAME__.Core.Tests` passes, with Core coverage ≥ 85%.
 - [ ] The Godot editor opens the project and runs `game/app/main.tscn`; `--headless --import`, the headless boot, and the runtime tests pass with no `ERROR` lines.
 - [ ] The wiki builds with `--strict` and DocFX `--warningsAsErrors`.
+- [ ] With the editor's .NET export templates installed, `just export` writes both release builds; the Core assembly is in each data folder, and an export boots and loads its content (ADR 0011).
 
 **Repository:**
 - [ ] `git init`, branch `main`, `git lfs install`, `tools/setup-hooks` run once per clone.
 - [ ] Remote created; `main` protected; merges require a green pipeline.
 - [ ] CI pipeline green on the host, including `godot-smoke` (spike S2) and the wiki publish (Pages limited to project members if private).
-- [ ] The first export includes Core and `content/*` (with the first export presets).
 
 **Design docs:**
 - [ ] GDD: overview, pillars, lexicon, loops, controls, and open questions filled in.

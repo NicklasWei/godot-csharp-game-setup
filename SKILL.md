@@ -49,8 +49,9 @@ it decides tooling, structure, and quality gates, and leaves gameplay architectu
    `gl_compatibility`. Prefer an empty folder; it refuses a non-empty one unless you pass `--overwrite`, which
    replaces same-named files, keeps the rest, and lists what it replaced. If the user already created a project in the
    Godot editor, commit it first, scaffold with `--overwrite`, then review `git diff` and merge their settings back
-   into `project.godot` (icon, rendering driver, physics engine, and similar). Standard library Python only. It creates the solution,
-   restores the local tools, and runs CSharpier (which also sorts `using`s for the game's name).
+   into `project.godot` (icon, rendering driver, physics engine, and similar) and any presets they made into
+   `export_presets.cfg`. Standard library Python only. It creates the solution, restores the local tools, and runs
+   CSharpier (which also sorts `using`s for the game's name).
 4. **Verify** with [references/verification.md](references/verification.md): every gate green, then each gate broken
    once on purpose and reverted. Report results faithfully, including anything you couldn't run.
 5. **Fill the docs** (GDD, Art Direction, Audio Direction, Implementation Plan) and write ADRs for decisions already
@@ -72,9 +73,12 @@ Directory.Packages.props      Central package versions
 BannedSymbols.*.txt           No System.Random, wall clock, Console, GD.Print, GD.Rand*, Thread.Sleep
 .config/dotnet-tools.json     CSharpier and DocFX, pinned
 .githooks/, tools/setup-hooks pre-commit (format, build, Core tests) plus Git LFS stand-in hooks
-justfile, .env.example        Short commands (just build, just test, just ci, ...); GODOT_BIN from a git-ignored .env
+justfile, .env.example        Short commands (just build, just test, just ci, just export, ...); GODOT_BIN from a
+                              git-ignored .env
 .gitlab-ci.yml | .github/     format, build (Debug + ExportRelease), Core tests + coverage, wiki, godot-smoke, pages
 project.godot                 Assembly name, physics interpolation, input map (pause), translations, renderer
+export_presets.cfg            Windows and Linux release presets that keep content in the pack and dev/, tests/,
+                              schemas, and root JSON files out
 <Game>.csproj                 Godot.NET.Sdk pinned; excludes Core, tests, tools; runtime tests not in ExportRelease
 src/<Game>.Core/              Diagnostics (ILog, IClock), Randomness (RngStream), Content (kind registry, loader,
                               database), Localization keys, InputActionNames, DevFlags
@@ -87,7 +91,7 @@ localization/                 en.po plus one fuzzy PO per locale
 content/schemas/              Generated JSON Schemas (none until the first content kind)
 tools/<Game>.Wiki, tools/wiki Wiki generator and DocFX site; .claude/launch.json previews it
 docs/                         GDD, ART_DIRECTION, AUDIO (music, effects, ambience, voice, mix), CODING_STANDARDS
-                              (the binding rules), IMPLEMENTATION_PLAN, adr/ 0001–0010 recording the template's own
+                              (the binding rules), IMPLEMENTATION_PLAN, adr/ 0001–0011 recording the template's own
                               decisions
 ```
 
@@ -146,7 +150,9 @@ to raise during planning, because they're expensive to change later:
 Pinned versions verified together (October 2026, on Windows): Godot 4.5.1-stable, 4.6.1-stable, and 4.8-dev7 with
 .NET SDK 10.0.401 and `net10.0`; CSharpier 1.3.0, DocFX 2.81.0, StyleCop.Analyzers 1.2.0-beta.556,
 Roslynator.Analyzers 5.0.1, BannedApiAnalyzers 5.6.0, xunit.v3 4.0.1, coverlet.MTP 10.1.0. Also verified on Linux in a
-Claude Code cloud container (October 2026): Godot 4.8-beta1 with .NET SDK 10.0.112, GitHub variant. The CI templates are valid
+Claude Code cloud container (October 2026): Godot 4.8-beta1 with .NET SDK 10.0.112, GitHub variant; the export presets
+and `just export` there with Godot 4.5.1-stable and 4.8-beta1, .NET SDK 10.0.401, and their .NET export templates
+(verification step 4). The CI templates are valid
 YAML but weren't run on GitLab or GitHub from the template (the GitLab one mirrors a pipeline that runs green; the
 GitHub one, with actions checkout/setup-dotnet v4, upload-pages-artifact v3, deploy-pages v4, is a port), so watch the
 first pipeline. Newer versions are usually fine; after bumping any, scaffold a throwaway project and rerun

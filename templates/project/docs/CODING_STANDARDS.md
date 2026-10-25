@@ -27,6 +27,7 @@ The Godot project root is the repository root.
 
 ```
 project.godot              Godot project
+export_presets.cfg         Windows and Linux export presets, with the pack's filters (ADR 0011)
 __GAME__.csproj            Game assembly (Godot.NET.Sdk); references Core
 __GAME__.sln               All C# projects
 global.json                Pinned .NET SDK (and the Microsoft.Testing.Platform opt-in)
@@ -44,7 +45,8 @@ BannedSymbols.Game.txt     Banned APIs for the game assembly
 src/__GAME__.Core/         Pure C# game logic. NO Godot references. Has .gdignore.
 tests/__GAME__.Core.Tests/ xUnit v3 tests mirroring src/__GAME__.Core/, plus file-based checks of project.godot,
                            scenes, PO catalogs, and content. Has .gdignore.
-tests/godot/               Godot-runtime tests: in-repo runner, [GodotTest] (ADR 0006). Visible to Godot.
+tests/godot/               Godot-runtime tests: in-repo runner, [GodotTest] (ADR 0006). Visible to Godot, excluded
+                           from exports.
 
 game/                      Godot layer, grouped by feature (snake_case folders, Godot convention)
   app/ common/ controls/ l10n/ ui/ ...
@@ -54,7 +56,7 @@ content/                   JSON definitions loaded by Core, one folder per kind 
 localization/              en.po (source of truth) plus one PO file per locale (ADR 0005)
 assets/                    Imported assets: models/, audio/, fonts/, icons/
 art-src/                   Source art (.blend, project files). .gdignore + Git LFS.
-dev/                       Look-dev and sandbox scenes. Excluded from export.
+dev/                       Look-dev and sandbox scenes. Excluded from exports.
 tools/                     Scripts and dev tools. Has .gdignore.
   __GAME__.Wiki/           Developer wiki generator (ADR 0008)
   wiki/                    DocFX site config and build scripts; generated/ and _site/ are gitignored
@@ -142,7 +144,7 @@ Everything that can be expressed without the engine: rules and formulas, simulat
 - **Validation** runs in Core and in tests over the real `content/` folder: unique IDs, resolving cross-references, sane ranges, required localization keys.
 - **Schemas:** `content/schemas/<kind>.schema.json` are **generated** from the document types (`JsonSchemaExporter`) and give editors validation and autocomplete. Every content file starts with `"$schema": "../schemas/<kind>.schema.json"`. A test fails when a schema is stale; regenerate with `UPDATE_CONTENT_SCHEMAS=1 dotnet test --project tests/__GAME__.Core.Tests`. Never edit one by hand.
 - **Asset references** in content are `res://` paths; a runtime test checks they exist and load.
-- **Export:** JSON isn't a Godot resource, so the export presets include `content/*` as non-resource files **(verify with the first export)**.
+- **Export:** the game reads `res://content` through Godot's file API, so the content must be in the pack. Godot 4 counts `.json` files as resources, and the export presets also include `content/*` by name and exclude `content/schemas/*` (ADR 0011).
 
 ### 3.8 Save data
 
@@ -490,11 +492,11 @@ Each overload needs its own documentation ID; verify a new entry by making the b
 | test | wiki | the generator with `--strict`, then DocFX with `--warningsAsErrors` |
 | godot | godot-smoke | Downloads headless Godot .NET for Linux, imports, boots the main scene, runs the Godot-runtime tests (JUnit), and fails on any `ERROR` / `SCRIPT ERROR` / `USER ERROR` line |
 | publish | pages | Publishes the wiki from the default branch |
-| export | (later) | Exports on tags, once export presets exist |
+| export | (later) | Exports the committed presets on tags (ADR 0011), with the export templates cached |
 
 ### 12.7 Task runner
 
-Day-to-day commands are recipes in the root `justfile` ([just](https://github.com/casey/just), ADR 0010): `just` lists them, and `just ci` runs every gate in CI order. Recipes run in PowerShell on Windows and `sh` elsewhere, and read machine-specific settings (`GODOT_BIN`) from a git-ignored `.env` (template: `.env.example`; a Windows path goes in single quotes, since unquoted backslashes stop just from loading the file). Unix recipes run the shell scripts through `sh`, because a project scaffolded on Windows commits them without the executable bit. A new routine command gets a recipe with a one-line comment, which `just --list` shows. CI and the pre-commit hook call the tools directly, so they don't need `just`.
+Day-to-day commands are recipes in the root `justfile` ([just](https://github.com/casey/just), ADR 0010): `just` lists them, and `just ci` runs every gate in CI order. Recipes run in PowerShell on Windows and `sh` elsewhere, and read machine-specific settings (`GODOT_BIN`) from a git-ignored `.env` (template: `.env.example`; a Windows path goes in single quotes, since unquoted backslashes stop just from loading the file). Unix recipes run the shell scripts through `sh`, because a project scaffolded on Windows commits them without the executable bit. A new routine command gets a recipe with a one-line comment, which `just --list` shows. `just export` (or `export-windows`, `export-linux`) writes release builds into the git-ignored `export/` and needs the editor version's .NET export templates on the machine (ADR 0011); it isn't part of `just ci`. CI and the pre-commit hook call the tools directly, so they don't need `just`.
 
 ---
 

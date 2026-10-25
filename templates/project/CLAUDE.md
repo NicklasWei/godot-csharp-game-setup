@@ -37,6 +37,7 @@ Routine commands are [just](https://github.com/casey/just) recipes in the root `
 | `just test` / `just cover` | Core tests / with the 85% coverage gate |
 | `just format` / `just format-check` | CSharpier format / check |
 | `just godot-import` / `just boot` / `just godot-test` | Headless import / boot / runtime tests (`just godot-test --filter=Name`) |
+| `just export` | Release builds into `export/` (`just export-windows`, `just export-linux`; needs the export templates) |
 | `just wiki` / `just wiki-serve` | Strict wiki build / serve at `http://localhost:8080` |
 | `just hooks` | Enable the git hooks once per clone |
 | `just ci` | Every gate in CI order (run before declaring work done) |
@@ -78,6 +79,8 @@ Godot commands use the **console** build of the editor (on Windows, the `_consol
 ```
 
 The first reimports assets (needed after adding files). The second boots the game headless; any `ERROR` line is a failure. The third runs the Godot-runtime tests (exit code 1 on failure; add `-- --filter=Name` or `-- --junit=report.xml`, or `-- --gc-stress` to hold C# wrappers unfinalized between tests, [ADR 0006](docs/adr/0006-godot-runtime-tests-and-ci.md)).
+
+Exports use the committed `export_presets.cfg` (`Windows` and `Linux`, [ADR 0011](docs/adr/0011-export-presets.md)): `"$GODOT_BIN" --headless --path . --export-release Linux export/linux/__GAME__.x86_64` into an existing folder. They need the editor version's .NET export templates (Editor → Manage Export Templates), installed per machine and replaced with each Godot bump; a pack-only export (`--export-pack`) doesn't.
 
 **Dev flags** (after `--`, listed in the wiki): `--autopilot` drives the game with scripted input; `--pseudoloc` turns on pseudolocalization.
 
