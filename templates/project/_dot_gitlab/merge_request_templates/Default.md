@@ -18,4 +18,5 @@
 - [ ] Content validates; no IDs renamed
 - [ ] The wiki builds with `--strict`
 - [ ] Docs updated if design, look, sound, or architecture changed (GDD, art direction, audio direction, standards, ADR)
+- [ ] Docs name implemented values by identifier, not by value; references to a renamed or changed identifier updated
 - [ ] Implementation plan checkboxes updated

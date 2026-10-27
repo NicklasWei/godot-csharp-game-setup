@@ -75,6 +75,9 @@ parity mismatch strict mode should fail on.
 **A richer page for one content kind:** keep the generic kind page and add a section or a separate page with
 computed cross-references (which levels use an enemy, which items share a tag).
 
+**Values a doc needs:** the docs never restate an implemented value (Coding Standards §6.2 in the template). When a
+doc needs a view of the numbers, such as a balance table or a comparison across content, add a page that generates it.
+
 **Presentation rules:** `ObjectTable` shows `…Radians` floats in degrees; `ValueFormatter` formats numbers in the
 invariant culture, enums by their camelCase content names, and vectors as tuples. Add a rule there rather than
 special-casing a page.

@@ -4,6 +4,10 @@ Each decision gets one file, `NNNN-kebab-title.md`, with **Context / Decision / 
 Accepted ADRs are immutable. To change a decision, write a new ADR that supersedes the old one, and edit only the
 old one's status line. Spikes end in an ADR that records the measurements behind the decision.
 
+An ADR is history: it may give the values its decision was made around, as of its date, while the code holds the
+current ones. Describe any other value instead of giving it precisely
+([Coding Standards §6.2](../CODING_STANDARDS.md#62-docs-and-values)).
+
 ADRs 0001–0011 came with the project template; they record the foundation's decisions and why they were made.
 
 | ADR | Title | Status |

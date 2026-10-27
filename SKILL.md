@@ -130,7 +130,7 @@ to raise during planning, because they're expensive to change later:
   `project.godot`; the tests find it.
 - **A dependency, autoload, top-level folder, or project:** ask the user first, then record an ADR.
 - **A gameplay feature, end to end:** GDD numbers → Core types and tests → content → view nodes → runtime test → docs
-  and plan checkboxes → Definition of Done.
+  (identifiers replace the GDD's numbers) and plan checkboxes → Definition of Done.
 - **Seeing the game without a person:** the movie writer with `--autopilot` (Coding Standards §9), then read the PNGs.
 
 ## Reference map

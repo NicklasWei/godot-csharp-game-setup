@@ -2,6 +2,7 @@
 
 > **Status:** Living document. **Current phase: Phase 0 (Foundation).**
 > Tick checkboxes as work lands (part of the [Definition of Done](CODING_STANDARDS.md#15-definition-of-done)).
+> A task may give preliminary values with their reasons; once it lands, it names the code identifiers instead ([Coding Standards §6.2](CODING_STANDARDS.md#62-docs-and-values)).
 > Related: [GDD](GDD.md) · [Art Direction](ART_DIRECTION.md) · [Audio Direction](AUDIO.md) · [Coding Standards](CODING_STANDARDS.md)
 
 ---

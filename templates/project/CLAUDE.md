@@ -156,6 +156,10 @@ None of these in per-frame paths: LINQ, capturing lambdas, string building or fo
 - **Every shader** starts with a header comment (purpose, uniforms with ranges and units); shared code goes in `.gdshaderinc`; it works on every supported renderer.
 - Every new shader or material goes into the look-dev scene. Flash and shake effects scale with an intensity setting; nothing flashes full-screen faster than 3 Hz.
 
+## Values in docs
+
+Once something is implemented, **the code is the source of truth for its values**: docs never restate an implemented tunable but name its identifier (`DashSettings.Cooldown`), and renaming or changing a setting includes the docs that name it. Exceptions and details: [Standards §6.2](docs/CODING_STANDARDS.md#62-docs-and-values).
+
 ## Developer wiki
 
 The wiki is generated from code: content kinds, `…Settings` records, Core enums, the input map, dev flags, and PO catalogs, plus `docs/` and the Core API. **Never edit generated pages; edit the source.** A new registry gets a page writer in the same change. CI builds it with `--strict`.
@@ -175,4 +179,4 @@ The wiki is generated from code: content kinds, `…Settings` records, Core enum
 5. No per-frame allocations were introduced.
 6. Content validates, and no IDs were renamed.
 7. The wiki builds with `--strict`.
-8. Docs are updated if the design, look, sound, or architecture changed (GDD, art direction, audio direction, standards, or an ADR), and the implementation plan checkboxes are ticked.
+8. Docs are updated if the design, look, sound, or architecture changed (GDD, art direction, audio direction, standards, or an ADR), they name implemented values by identifier instead of restating them, and the implementation plan checkboxes are ticked.
