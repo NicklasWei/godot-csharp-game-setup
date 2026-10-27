@@ -171,7 +171,10 @@ change and add no entry here. This file is read into context, so every entry has
 - **Docs updated in the same change** as the design, look, or architecture change; implementation plan checkboxes
   ticked as work lands. The Definition of Done lists it so it isn't forgotten.
 - **Keep CLAUDE.md's status short.** The project's status paragraph grew into one run-on sentence covering every
-  landed feature. Keep three to five lines; history belongs in the plan and the ADRs.
+  landed feature, about 16,000 characters, and a game built from the template grew its own again, past an inline
+  "three to five lines" rule in the same paragraph. So the rule sits in a comment under the heading, apart from the
+  text it governs, and the status is three labeled lines (the phase, just landed, next), rewritten as work lands and
+  never appended to; history belongs in the plan and the ADRs. **(templated)**
 
 ## 7. Working with Claude in these projects
 
