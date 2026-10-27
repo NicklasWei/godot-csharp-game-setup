@@ -38,6 +38,17 @@ The result is a rare error in whichever test happens to be running, which looks 
   but unfinalized through the next test, and a race that a normal run hits only rarely shows up there.
 - **Allocations:** the runner awaits a test once against a single timer rather than polling per frame, so it adds no
   allocations while a test measures them. `AllocationProbe` counts main-thread bytes from inside the physics loop.
+- **Speed:** the runner runs with `--fixed-fps 60`, the physics tick rate (`just godot-test`, and in CI). It turns off
+  Godot's real-time sync: every frame advances exactly 1/60 s with one physics tick, and frames follow as fast as the
+  CPU allows, where a headless run otherwise sleeps every frame and ticks physics in real time. Gameplay steps once per
+  physics tick at a fixed step (Standards §3.5, §5.6), so a test's frame waits mean the same game time and only finish
+  sooner: in a game built with this template, a suite of long gameplay tests went from about five minutes to under
+  ten seconds. Delta-driven views (camera easing, UI timers) also repeat exactly. What the tests no longer see is
+  several rendered frames between two physics ticks, as on a fast monitor. A performance benchmark keeps real time
+  and runs without the flag.
+- **Timeouts** count real time (`Task.Delay`). A `SceneTreeTimer` would count game time under `--fixed-fps`, which runs
+  far ahead (a 10 s timer fires after a few milliseconds), and time out a test that waits on work taking real time,
+  such as a background load.
 - **CI (`godot-smoke`):** downloads the exact Godot .NET release for Linux, builds, adds a `.gdignore` to the
   in-project NuGet cache, runs `--import` and a short headless boot, runs the runtime tests with `--junit`, and fails
   on any log line starting with `ERROR`, `SCRIPT ERROR`, or `USER ERROR` (with an explicit `exit 1`: under `set -e`, a
@@ -51,7 +62,7 @@ The result is a rare error in whichever test happens to be running, which looks 
   first run found a per-kill string allocation the debug overlay's sampling had missed.
 - The runner is ours to maintain and has no IDE test-explorer integration; the log and the JUnit report are the
   interface.
-- When gameplay exists, CI also runs it headless on the autopilot (`-- --autopilot`).
+- When gameplay exists, CI also runs it headless on the autopilot (`--fixed-fps 60 -- --autopilot`).
 - Game code follows the same rule as the tests: hold a resource loaded by path for as long as anything may load it
   again (Standards §5.8). Run the suite with `--gc-stress` after changing how tests or views hold resources, and when
   upgrading Godot. Once a Godot release fixes godot#112067, the settling between tests can go, and `--gc-stress` is

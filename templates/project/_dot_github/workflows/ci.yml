@@ -90,8 +90,8 @@ jobs:
           set -o pipefail
           "$GODOT_BIN" --headless --path . --import 2>&1 | tee import.log
           "$GODOT_BIN" --headless --path . --quit-after 120 2>&1 | tee run.log
-          # Once gameplay exists, also run it on the autopilot here, e.g. --quit-after 600 -- --autopilot.
-          "$GODOT_BIN" --headless --path . res://tests/godot/test_runner.tscn -- --junit=godot-tests.xml 2>&1 | tee godot-tests.log
+          # Once gameplay exists, also run it on the autopilot here, e.g. --quit-after 600 --fixed-fps 60 -- --autopilot.
+          "$GODOT_BIN" --headless --path . --fixed-fps 60 res://tests/godot/test_runner.tscn -- --junit=godot-tests.xml 2>&1 | tee godot-tests.log
           if grep -E "^(ERROR|SCRIPT ERROR|USER ERROR)" import.log run.log; then
             echo "Godot reported errors (see above)."
             exit 1
