@@ -140,7 +140,7 @@ Everything that can be expressed without the engine: rules and formulas, simulat
 - **Documents and definitions:** a document is the raw JSON shape (nullable properties, derives from `ContentDocument`); the kind's validator turns it into an immutable definition record that game code uses. Enum-like values are camelCase strings in JSON, mapped by the validator; never ordinals.
 - **IDs:** `<prefix>.<snake_case_name>`, where the name is the file name (the loader enforces it). IDs are **permanent**: saves and other content reference them. Never rename or reuse one; deprecate it instead. Content names of enum values are as permanent as IDs.
 - **Loading:** `ContentLoader` builds one `ContentDatabase` and collects every problem with its file path. The game loads it once at boot through Godot's file API (`ContentFiles`, which works in exports) and passes it down. Broken files are logged and left out.
-- **Tuning numbers** belong in content, not in `[Export]` fields. Numbers still in code live in public `…Settings` records with named static instances, which the wiki lists.
+- **Tuning numbers** belong in content, not in `[Export]` fields. Numbers still in code live in public `…Settings` records with named static instances, which the wiki lists. Docs refer to them by identifier, never by value (§6.2).
 - **Validation** runs in Core and in tests over the real `content/` folder: unique IDs, resolving cross-references, sane ranges, required localization keys.
 - **Schemas:** `content/schemas/<kind>.schema.json` are **generated** from the document types (`JsonSchemaExporter`) and give editors validation and autocomplete. Every content file starts with `"$schema": "../schemas/<kind>.schema.json"`. A test fails when a schema is stale; regenerate with `UPDATE_CONTENT_SCHEMAS=1 dotnet test --project tests/__GAME__.Core.Tests`. Never edit one by hand.
 - **Asset references** in content are `res://` paths; a runtime test checks they exist and load.
@@ -321,6 +321,8 @@ private Label _buildLabel = null!;
 
 ## 6. Documentation standards
 
+### 6.1 XML documentation
+
 **XML documentation is required on every type and member, including private methods** (CS1591 + SA1600 with `documentPrivateElements: true`). Private fields are exempt.
 
 | Element | Requirement |
@@ -334,7 +336,23 @@ private Label _buildLabel = null!;
 
 Document **intent, units, and invariants**, not the name restated. "Gets the speed." fails; "Gets the forward speed in m/s, clamped to [MinSpeed, MaxSpeed]." passes. These summaries are also the wiki's descriptions (§13).
 
+### 6.2 Docs and values
+
 When a change alters design, look, sound, architecture, or a standard, update the doc in the **same** change: the GDD, the art direction, the audio direction, this file, an ADR, and the implementation plan's checkboxes.
+
+**Once something is implemented, the code is the source of truth for its values.** A tunable value, anything that might be adjusted for feel or balance (a speed, a cooldown, a cost, a spawn rate, a count), lives in one place: content or a `…Settings` record (§3.7). Changing it is then a one-line change that no doc contradicts.
+
+- **Docs name the identifier, never the value.** A doc that refers to an implemented value names the setting or content field and keeps the reasoning; the number goes. Before implementation the GDD says "a dash recovers in 0.6 s *(tunable)*, short enough to chain into a parry"; after it, "a dash recovers quickly enough to chain into a parry (`DashSettings.Cooldown`)".
+- **Values a doc needs to show are generated.** The wiki already renders every content definition and `…Settings` record (§13). Another view of them, such as a balance table, gets a page writer, never a hand-typed table.
+- **State relations, not numbers.** When the design depends on how values relate (a dash recovers before the parry window closes), write the relation and enforce it with a content validation or a test.
+- **XML docs too:** units, ranges, and invariants by name (`clamped to [MinSpeed, MaxSpeed]`), never the current default.
+- **A change to an identifier includes the docs.** When you rename or remove a setting, content field, or constant, or change its units or meaning, search `docs/`, `CLAUDE.md`, and code comments for it and update every reference in the same change; the compiler doesn't see them. When you change a value, search the docs for the old value too.
+
+A doc gives a precise value only in these cases:
+
+- **Before implementation:** the GDD and the implementation plan give preliminary values, marked *(tunable)*, each with its reason. The change that implements one moves the value into code and replaces it in the docs with the identifier.
+- **History:** an ADR or a spike result may give the values its decision was made around (the measurements, the budget chosen from them), as of its date. A value the decision doesn't depend on is described ("a short cooldown"), not given precisely.
+- **Non-tunable values the section needs:** an external standard or a target the doc itself sets (a loudness target, a performance budget), an engine or platform limit, a contract or format (the ID pattern, a save version), or a constant whose change would be a redesign rather than a tuning pass.
 
 ---
 
@@ -534,3 +552,4 @@ A change is done when **all** of these hold:
 - [ ] Content validates; IDs are new or unchanged, never renamed.
 - [ ] The wiki builds with `--strict`.
 - [ ] Docs are updated if design, look, sound, or architecture changed (GDD, art direction, audio direction, standards, ADR), and the implementation plan checkboxes are ticked.
+- [ ] Docs name implemented values by identifier instead of restating them, and references to a renamed or changed identifier are updated (§6.2).

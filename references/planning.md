@@ -74,7 +74,10 @@ them as defaults, and change one only with an ADR.
 
 ## 3. Writing the GDD
 
-- Short declarative sentences. Every system gets numbers, marked *(tunable)*.
+- Short declarative sentences. Every system gets numbers, marked *(tunable)*, each with its reason. They're
+  preliminary, like the values in the plan's tasks: once one is implemented, it lives in code (content or a
+  `…Settings` record), and the docs name its identifier and keep the reason, so a tuning pass changes one place
+  (Coding Standards §6.2).
 - **Keep it on game design.** The look and the sound get a brief overview at most (the tone in §2, a few sentences in
   §14 Audio), and their detail lives in the Art and Audio Directions, so the GDD never repeats them. A fairness rule
   that involves them, such as a telegraph that is both seen and heard, still goes in §12.
@@ -157,6 +160,8 @@ The template's plan has ten generic phases; reshape everything after Phase 1 for
   decision as a sentence.
 - Accepted ADRs are immutable: supersede with a new ADR, and edit only the old one's status line (and the index).
 - Write one for every new dependency, folder, autoload, project, renderer or physics choice, save format, and spike.
+- An ADR may give the values its decision was made around (a spike's measurements, the budget chosen from them), as
+  of its date. Describe other values rather than giving them precisely; the code holds the current ones.
 - The template ships ADRs 0001–0011 for its own decisions; number the game's first own decision 0012.
 
 ## 9. CLAUDE.md

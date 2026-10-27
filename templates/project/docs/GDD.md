@@ -1,12 +1,13 @@
 # __TITLE__ — Game Design Document
 
 > **Status:** Living document, pre-production.
-> All numbers marked *(tunable)* are starting values for playtesting, not commitments.
+> Numbers marked *(tunable)* are preliminary values for playtesting, each with its reason. Once one is implemented, the code holds it and this document names its identifier instead ([Coding Standards §6.2](CODING_STANDARDS.md#62-docs-and-values)).
 > Related: [Art Direction](ART_DIRECTION.md) · [Audio Direction](AUDIO.md) · [Coding Standards](CODING_STANDARDS.md) · [Implementation Plan](IMPLEMENTATION_PLAN.md)
 
 <!--
 How to fill this in: write what the game IS, in short declarative sentences. Every system gets numbers (marked
-tunable), every name goes into the lexicon first, and every open decision goes into §17 rather than staying vague in
+tunable, each with its reason; once implemented, the code identifier replaces the number and the reason stays),
+every name goes into the lexicon first, and every open decision goes into §17 rather than staying vague in
 the text. Keep it on game design: the look and the sound get a brief overview at most, and their detail lives in
 ART_DIRECTION.md and AUDIO.md. Delete sections the game doesn't need (never Audio: a game without music or voice says
 so); add game-specific ones after §8.
