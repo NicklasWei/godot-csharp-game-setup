@@ -52,7 +52,7 @@ public sealed partial class GodotTestRunner : Node
     private readonly GodotLog _log = new(LogLevel.Info);
 
     /// <inheritdoc/>
-    public override void _Ready() => _ = RunAllAsync();
+    public override void _Ready() => _ = RunGuardedAsync();
 
     /// <summary>
     /// Finds the runtime tests: public methods marked <see cref="GodotTestAttribute"/>, ordered by full name.
@@ -187,6 +187,24 @@ public sealed partial class GodotTestRunner : Node
     }
 
     /// <summary>
+    /// Runs the tests (<see cref="RunAllAsync"/>), and if the runner itself throws, reports it and quits with exit code
+    /// 1, rather than leave the process running with no result.
+    /// </summary>
+    /// <returns>A task that completes when the run is reported.</returns>
+    private async Task RunGuardedAsync()
+    {
+        try
+        {
+            await RunAllAsync();
+        }
+        catch (Exception exception)
+        {
+            _log.Info(LogCategory, $"FAIL {nameof(GodotTestRunner)}: {Describe(exception)}");
+            GetTree().Quit(1);
+        }
+    }
+
+    /// <summary>
     /// Runs every discovered test, reports, and quits with the result as the exit code.
     /// </summary>
     /// <returns>A task that completes when the run is reported.</returns>
@@ -280,13 +298,9 @@ public sealed partial class GodotTestRunner : Node
             failure = Describe(inner);
         }
         catch (Exception exception)
-            when (exception
-                    is GodotTestFailedException
-                        or TimeoutException
-                        or InvalidOperationException
-                        or ArgumentException
-            )
         {
+            // Whatever a test throws is its failure: one that escaped would end the run without a result, the process
+            // still running.
             failure = Describe(exception);
         }
 

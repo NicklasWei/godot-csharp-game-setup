@@ -26,7 +26,9 @@ The result is a rare error in whichever test happens to be running, which looks 
   They compile into Debug builds only; `ExportRelease` builds exclude `tests/godot/**`, and CI builds both.
 - **Failures:** a test fails when it throws, times out, or when Godot logs an engine, script, or shader error during
   it or in the frame after, captured with a C# `Logger` registered through `OS.AddLogger` (Godot 4.5+). The runner
-  quits with exit code 1 on any failure, or when it finds no tests.
+  quits with exit code 1 on any failure, or when it finds no tests. Whatever a test throws is its failure, and if the
+  runner itself throws, it reports that and quits with 1: an exception that escaped would leave the process running
+  with no result.
 - **Scenes and finalizers:** tests load scenes through `GodotTestContext.Scene` and `Instantiate`, never
   `ResourceLoader`. The runner loads each scene once and holds it until the run ends (`LoadedScenes`), as `Main` holds
   its scenes for a session, so nothing a scene uses is freed and reloaded mid-run. After each test, it runs
@@ -48,7 +50,8 @@ The result is a rare error in whichever test happens to be running, which looks 
   and runs without the flag.
 - **Timeouts** count real time (`Task.Delay`). A `SceneTreeTimer` would count game time under `--fixed-fps`, which runs
   far ahead (a 10 s timer fires after a few milliseconds), and time out a test that waits on work taking real time,
-  such as a background load.
+  such as a background load. For the same reason, a test that waits on such work uses `GodotTestContext.WaitUntil`,
+  which gives up only once both its ticks and a real-time minimum have passed.
 - **CI (`godot-smoke`):** downloads the exact Godot .NET release for Linux, builds, adds a `.gdignore` to the
   in-project NuGet cache, runs `--import` and a short headless boot, runs the runtime tests with `--junit`, and fails
   on any log line starting with `ERROR`, `SCRIPT ERROR`, or `USER ERROR` (with an explicit `exit 1`: under `set -e`, a
