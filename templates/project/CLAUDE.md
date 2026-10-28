@@ -4,7 +4,15 @@
 
 ## Status
 
-**Phase 0 (Foundation) is in progress.** Keep this section to three to five lines: the current phase, what just landed, and what's next. History belongs in [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) and the ADRs, not here. Track progress and tick checkboxes in the plan. Decisions are recorded in [docs/adr/](docs/adr/README.md).
+<!-- Three short lines: the current phase, what just landed (the latest change or two), and what's next. Rewrite them as work lands, never append: history belongs in docs/IMPLEMENTATION_PLAN.md and the ADRs. -->
+
+**Phase 0 (Foundation) is in progress.**
+
+**Just landed:** the project scaffold.
+
+**Next:** verify every gate, fill in the design docs (GDD, Art and Audio Directions, the plan), and set up the remote.
+
+Track progress and tick checkboxes in [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md). Decisions are recorded in [docs/adr/](docs/adr/README.md).
 
 ## Docs: read the relevant one before working in an area
 

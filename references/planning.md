@@ -166,8 +166,9 @@ The template's plan has ten generic phases; reshape everything after Phase 1 for
 
 ## 9. CLAUDE.md
 
-- It's what every future session reads first: keep it accurate and short. The status section is three to five lines
-  (current phase, what just landed, what's next).
+- It's what every future session reads first: keep it accurate and short. The status is three labeled lines (the
+  current phase, **Just landed**, **Next**), rewritten as work lands, never appended to; the comment under its
+  heading keeps the rule.
 - Commands must be copy-pasteable and verified. Record the machine-specific `GODOT_BIN` path.
 - Add the game's dev flags as they appear (they're also on the wiki's dev-flags page).
 - When a rule changes, change it in `docs/CODING_STANDARDS.md` and the CLAUDE.md summary in the same change.
