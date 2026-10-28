@@ -534,7 +534,7 @@ Day-to-day commands are recipes in the root `justfile` ([just](https://github.co
 - **Conventional Commits**, scoped by feature or Core area: `feat(combat): add parry window`.
 - **Git LFS** for binary art and audio (`.gitattributes`). Run `git lfs install` once per machine.
 - **Never commit** `.godot/`, `bin/`, `obj/`, `export/`, `TestResults/`, generated wiki output. **Do commit** `*.import` and `*.uid`.
-- Only commit when asked.
+- How Claude commits, pushes, and opens pull requests is agreed with the user at project start and recorded in [CLAUDE.md](../CLAUDE.md#git).
 
 ---
 
