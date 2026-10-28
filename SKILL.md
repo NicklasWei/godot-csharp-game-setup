@@ -26,9 +26,10 @@ it decides tooling, structure, and quality gates, and leaves gameplay architectu
 
 1. **Interview** the user: only what can't be defaulted. The questions and defaults are in
    [references/planning.md](references/planning.md) §1. At minimum before scaffolding: title and PascalCase
-   identifier, Godot version, code host (GitLab or GitHub), languages, 2D or 3D and the renderer. Before Phase 1,
-   the rest of §1, **including sound**: music style and references, sound effects, ambience, and the voice model with
-   its languages. A setup isn't complete without them, and "none" is an answer.
+   identifier, Godot version, code host (GitLab or GitHub), languages, 2D or 3D and the renderer, and how Claude
+   handles git (commits, pushes, pull requests; locally and in cloud sessions). Before Phase 1, the rest of §1,
+   **including sound**: music style and references, sound effects, ambience, and the voice model with its languages.
+   A setup isn't complete without them, and "none" is an answer.
 2. **Check the toolchain** on this machine:
    - `dotnet --list-sdks`: a .NET SDK whose major version matches the target framework.
    - The target framework must be at least what that Godot version's `GodotSharp` package targets (Godot 4.8 ships only
@@ -56,9 +57,9 @@ it decides tooling, structure, and quality gates, and leaves gameplay architectu
    once on purpose and reverted. Report results faithfully, including anything you couldn't run.
 5. **Fill the docs** (GDD, Art Direction, Audio Direction, Implementation Plan) and write ADRs for decisions already
    made, following [references/planning.md](references/planning.md). Update the project's `CLAUDE.md` (one-line
-   description, status, `GODOT_BIN` path).
-6. **Hand off what needs the user's accounts**: creating the remote, protecting `main`, enabling Pages. If the user
-   does git writes by hand (check memory or ask), give the git commands as separate code blocks instead of running them.
+   description, status, `GODOT_BIN` path, the agreed git workflow).
+6. **Hand off what needs the user's accounts**: creating the remote, protecting `main`, enabling Pages. Git writes
+   follow the workflow agreed in the interview; any the user does themselves get their commands as separate code blocks.
 
 After that, development follows the project's own `CLAUDE.md` and `docs/CODING_STANDARDS.md`, which the scaffold wrote.
 

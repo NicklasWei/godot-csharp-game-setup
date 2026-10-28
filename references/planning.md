@@ -32,6 +32,7 @@ GDD §17 (open questions).
 | Code host | CI template (GitLab or GitHub) and Pages | Ask; there's no safe default |
 | Languages | PO catalogs, plural forms, font coverage | English only, with keys from day one |
 | 2D or 3D, and the renderer | `project.godot`, budgets, shader rules | 3D: Forward+ (Mobile as fallback); 2D or low-end targets: Compatibility or Mobile |
+| Git with Claude: does Claude commit, push, and open pull requests, locally and in cloud sessions? | Claude follows it from the first commit; it goes in CLAUDE.md's Git section | Ask, or take it from memory; there's no default. A cloud session's work is visible only once pushed |
 
 **Needed before Phase 1** (they go into the GDD, the Art Direction, and the Audio Direction):
 
@@ -170,5 +171,6 @@ The template's plan has ten generic phases; reshape everything after Phase 1 for
   current phase, **Just landed**, **Next**), rewritten as work lands, never appended to; the comment under its
   heading keeps the rule.
 - Commands must be copy-pasteable and verified. Record the machine-specific `GODOT_BIN` path.
+- The Git section records the git workflow agreed in the interview (§1), so every session follows it.
 - Add the game's dev flags as they appear (they're also on the wiki's dev-flags page).
 - When a rule changes, change it in `docs/CODING_STANDARDS.md` and the CLAUDE.md summary in the same change.

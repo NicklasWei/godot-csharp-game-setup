@@ -176,7 +176,7 @@ The wiki is generated from code: content kinds, `…Settings` records, Core enum
 
 - Default branch `main`. Branches `feat/…`, `fix/…`, `chore/…`, `docs/…`, `art/…`, `spike/…`.
 - **Conventional Commits**, scoped by feature or Core area: `feat(combat): add parry window`. Squash-merge once the pipeline is green.
-- Only commit when asked.
+- **Claude and git:** <!-- agreed with the user at project start: whether Claude commits, pushes, and opens pull requests, and whether that differs in cloud sessions, where nothing is visible until it's pushed. -->
 
 ## Definition of Done (check before declaring any task complete)
 

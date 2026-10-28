@@ -182,8 +182,9 @@ change and add no entry here. This file is read into context, so every entry has
 - **Hand-editing `.tscn`:** reference resources by `res://` path and never invent `uid://` values; Godot fills them on
   the next save. Exported node references use `node_paths=PackedStringArray("_field")` plus `_field = NodePath("…")`.
 - **Ask before adding packages, addons, autoloads, top-level folders, or projects**, and record each in an ADR.
-- **Respect the user's git preference.** Some users do every git write themselves; give them the commands in
-  separate code blocks instead of running them. Only commit when asked.
+- **Agree on git at the start.** Users differ: some do every git write themselves, some let Claude commit but push
+  themselves, and a cloud session's work is visible only once it's pushed. Ask in the interview, record the answer in
+  CLAUDE.md's Git section, and follow it; a write the user does themselves gets its command in its own code block.
 - **Prove gates by breaking them once** (a missing doc, a banned API, a misformatted file), then revert. A gate that was
   never seen failing might not be wired in.
 - **Spikes end in numbers and an ADR.** "It seemed fast" isn't a decision record.

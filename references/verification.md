@@ -134,7 +134,7 @@ reports "Zero tests ran", which proves nothing about the gate.
 
 These need the user's accounts; give them the steps rather than doing them:
 
-1. Create the remote repository; push `main`.
+1. Create the remote repository; push `main` (or have Claude push it, if the agreed git workflow says so).
 2. Protect `main`; require a passing pipeline to merge; squash merges.
 3. Watch the first pipeline: every job green, including `godot-smoke` and `wiki`. If `godot-smoke` can't download
    Godot, check that `GODOT_VERSION` is a real `godotengine/godot-builds` release tag (e.g. `4.5.1-stable`).
