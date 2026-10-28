@@ -75,10 +75,10 @@ Godot commands use the **console** build of the editor (on Windows, the `_consol
 "$GODOT_BIN" --headless --path . --quit-after 120
 ```
 ```bash
-"$GODOT_BIN" --headless --path . res://tests/godot/test_runner.tscn
+"$GODOT_BIN" --headless --path . --fixed-fps 60 res://tests/godot/test_runner.tscn
 ```
 
-The first reimports assets (needed after adding files). The second boots the game headless; any `ERROR` line is a failure. The third runs the Godot-runtime tests (exit code 1 on failure; add `-- --filter=Name` or `-- --junit=report.xml`, or `-- --gc-stress` to hold C# wrappers unfinalized between tests, [ADR 0006](docs/adr/0006-godot-runtime-tests-and-ci.md)).
+The first reimports assets (needed after adding files). The second boots the game headless; any `ERROR` line is a failure. The third runs the Godot-runtime tests at a fixed 60 fps, faster than real time (exit code 1 on failure; add `-- --filter=Name` or `-- --junit=report.xml`, or `-- --gc-stress` to hold C# wrappers unfinalized between tests, [ADR 0006](docs/adr/0006-godot-runtime-tests-and-ci.md)).
 
 Exports use the committed `export_presets.cfg` (`Windows` and `Linux`, [ADR 0011](docs/adr/0011-export-presets.md)): `"$GODOT_BIN" --headless --path . --export-release Linux export/linux/__GAME__.x86_64` into an existing folder. They need the editor version's .NET export templates (Editor → Manage Export Templates), installed per machine and replaced with each Godot bump; a pack-only export (`--export-pack`) doesn't.
 

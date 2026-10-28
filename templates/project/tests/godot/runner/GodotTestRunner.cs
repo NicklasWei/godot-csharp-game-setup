@@ -21,7 +21,8 @@ namespace __GAME__.RuntimeTests.Runner;
 /// for the run (<see cref="LoadedScenes"/>).
 /// </para>
 /// <para>
-/// Run it headless with <c>"$GODOT_BIN" --headless --path . res://tests/godot/test_runner.tscn</c>. User arguments
+/// Run it headless with <c>"$GODOT_BIN" --headless --path . --fixed-fps 60 res://tests/godot/test_runner.tscn</c>,
+/// faster than real time (ADR 0006); timeouts still count real time. User arguments
 /// after <c>--</c>: <c>--filter=TEXT</c> runs only tests whose full name contains TEXT, <c>--junit=PATH</c> writes a
 /// JUnit XML report for CI, and <c>--gc-stress</c> holds every wrapper a test leaves for the GC collected but
 /// unfinalized through the next test (<see cref="FinalizerGate"/>).
@@ -51,7 +52,7 @@ public sealed partial class GodotTestRunner : Node
     private readonly GodotLog _log = new(LogLevel.Info);
 
     /// <inheritdoc/>
-    public override void _Ready() => _ = RunAllAsync();
+    public override void _Ready() => _ = RunGuardedAsync();
 
     /// <summary>
     /// Finds the runtime tests: public methods marked <see cref="GodotTestAttribute"/>, ordered by full name.
@@ -186,6 +187,24 @@ public sealed partial class GodotTestRunner : Node
     }
 
     /// <summary>
+    /// Runs the tests (<see cref="RunAllAsync"/>), and if the runner itself throws, reports it and quits with exit code
+    /// 1, rather than leave the process running with no result.
+    /// </summary>
+    /// <returns>A task that completes when the run is reported.</returns>
+    private async Task RunGuardedAsync()
+    {
+        try
+        {
+            await RunAllAsync();
+        }
+        catch (Exception exception)
+        {
+            _log.Info(LogCategory, $"FAIL {nameof(GodotTestRunner)}: {Describe(exception)}");
+            GetTree().Quit(1);
+        }
+    }
+
+    /// <summary>
     /// Runs every discovered test, reports, and quits with the result as the exit code.
     /// </summary>
     /// <returns>A task that completes when the run is reported.</returns>
@@ -260,14 +279,17 @@ public sealed partial class GodotTestRunner : Node
             if (test.Invoke(suite, arguments) is Task task)
             {
                 // One timer raced against the test, rather than a per-frame poll: the runner must not
-                // allocate while a test measures allocations.
+                // allocate while a test measures allocations. A real-time one: under --fixed-fps, a
+                // SceneTreeTimer counts game time, which runs far ahead, and would time out work that takes
+                // real time, such as a background load.
                 double timeout = test.GetCustomAttribute<GodotTestAttribute>()?.TimeoutSeconds ?? 0;
-                SceneTreeTimer timer = GetTree().CreateTimer(timeout, processAlways: true, ignoreTimeScale: true);
-                if (await Task.WhenAny(task, WaitForTimerAsync(timer)) != task)
+                using var cancel = new CancellationTokenSource();
+                if (await Task.WhenAny(task, Task.Delay(TimeSpan.FromSeconds(timeout), cancel.Token)) != task)
                 {
                     throw new TimeoutException($"Still running after {timeout} s.");
                 }
 
+                await cancel.CancelAsync();
                 await task;
             }
         }
@@ -276,13 +298,9 @@ public sealed partial class GodotTestRunner : Node
             failure = Describe(inner);
         }
         catch (Exception exception)
-            when (exception
-                    is GodotTestFailedException
-                        or TimeoutException
-                        or InvalidOperationException
-                        or ArgumentException
-            )
         {
+            // Whatever a test throws is its failure: one that escaped would end the run without a result, the process
+            // still running.
             failure = Describe(exception);
         }
 
@@ -307,14 +325,6 @@ public sealed partial class GodotTestRunner : Node
 
         return new TestResult(test.DeclaringType?.Name ?? "?", test.Name, failure, stopwatch.Elapsed.TotalSeconds);
     }
-
-    /// <summary>
-    /// Waits for a timer to fire.
-    /// </summary>
-    /// <param name="timer">The timer.</param>
-    /// <returns>A task that completes when the timer times out.</returns>
-    private async Task WaitForTimerAsync(SceneTreeTimer timer) =>
-        await ToSignal(timer, SceneTreeTimer.SignalName.Timeout);
 
     /// <summary>
     /// One test's outcome.

@@ -91,7 +91,7 @@ Each spike is time-boxed and ends in an ADR.
 - [ ] `--autopilot` drives the slice; CI runs it headless; the movie writer captures it.
 - [ ] Debug overlay: FPS, frame times, allocated bytes per frame.
 - [ ] A runtime test runs the slice at 0 B/frame.
-- [ ] Benchmark flag measuring against the §14 budgets (spike S3).
+- [ ] Benchmark flag measuring against the §14 budgets (spike S3), in real time: never with `--fixed-fps`.
 - [ ] Placeholder audio for the slice's events (and a music loop, if the game has music) on the buses from [Audio Direction §10.1](AUDIO.md#101-buses), with the bus layout pinned by a file-based test.
 - [ ] The post stack, if it matters to feel.
 

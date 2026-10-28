@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Godot;
 
@@ -9,6 +10,12 @@ namespace __GAME__.RuntimeTests.Runner;
 /// </summary>
 public sealed class GodotTestContext
 {
+    /// <summary>How many physics ticks <see cref="WaitUntil"/> waits between checks.</summary>
+    private const int WaitStepTicks = 10;
+
+    /// <summary>The least real time <see cref="WaitUntil"/> waits before giving up.</summary>
+    private static readonly TimeSpan MinimumWait = TimeSpan.FromSeconds(10);
+
     /// <summary>The scenes loaded for the run.</summary>
     private readonly LoadedScenes _scenes;
 
@@ -75,6 +82,35 @@ public sealed class GodotTestContext
         {
             await Root.ToSignal(Tree, SceneTree.SignalName.PhysicsFrame);
         }
+    }
+
+    /// <summary>
+    /// Waits, a few physics ticks at a time, until a condition holds, giving up only once both the ticks and
+    /// <see cref="MinimumWait"/> of real time have passed.
+    /// </summary>
+    /// <remarks>
+    /// The ticks bound what the game does in game time; the real-time minimum leaves room for work on a worker, such
+    /// as a background load, which takes real time whatever the frame rate. At a fixed fps the ticks pass in a moment
+    /// (ADR 0006); at real-time pacing they outlast the minimum, which then changes nothing.
+    /// </remarks>
+    /// <param name="condition">The condition.</param>
+    /// <param name="maxTicks">The fewest physics ticks to wait before giving up.</param>
+    /// <returns><see langword="true"/> when the condition held.</returns>
+    public async Task<bool> WaitUntil(Func<bool> condition, int maxTicks)
+    {
+        ArgumentNullException.ThrowIfNull(condition);
+        long start = Stopwatch.GetTimestamp();
+        for (int ticks = 0; !condition(); ticks += WaitStepTicks)
+        {
+            if (ticks >= maxTicks && Stopwatch.GetElapsedTime(start) >= MinimumWait)
+            {
+                return false;
+            }
+
+            await PhysicsFrames(WaitStepTicks);
+        }
+
+        return true;
     }
 
     /// <summary>

@@ -54,11 +54,11 @@ user's environment, so use the full path (quoted; it often contains spaces).
 ```
 
 ```bash
-"$GODOT_BIN" --headless --path . res://tests/godot/test_runner.tscn
+"$GODOT_BIN" --headless --path . --fixed-fps 60 res://tests/godot/test_runner.tscn
 ```
 
 ```bash
-"$GODOT_BIN" --headless --path . res://tests/godot/test_runner.tscn -- --gc-stress
+"$GODOT_BIN" --headless --path . --fixed-fps 60 res://tests/godot/test_runner.tscn -- --gc-stress
 ```
 
 The import creates `.uid` files next to the scripts: commit them. The boot must log no line starting with `ERROR`,

@@ -42,8 +42,9 @@ godot-import: (_godot "--headless" "--path" "." "--import")
 # Boot the game headless for 120 frames; check the output for ERROR lines (CI fails on them).
 boot: (_godot "--headless" "--path" "." "--quit-after" "120")
 
-# Run the Godot-runtime tests; extra arguments go to the runner, e.g. just godot-test --filter=Title.
-godot-test *args: (_godot "--headless" "--path" "." "res://tests/godot/test_runner.tscn" "--" args)
+# Run the Godot-runtime tests; extra arguments go to the runner, e.g. just godot-test --filter=Title. At a fixed 60 fps,
+# faster than real time: frame waits mean the same game time and only finish sooner (ADR 0006).
+godot-test *args: (_godot "--headless" "--path" "." "--fixed-fps" "60" "res://tests/godot/test_runner.tscn" "--" args)
 
 # Export a Windows release build to export/windows/ (needs the editor's .NET export templates, ADR 0011).
 export-windows: (_export "Windows" "export/windows/__GAME__.exe")

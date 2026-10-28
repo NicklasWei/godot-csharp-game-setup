@@ -92,7 +92,8 @@ change and add no entry here. This file is read into context, so every entry has
   silently unless captured. Register a `Logger` with `OS.AddLogger` (Godot 4.5+) and fail the test on any error logged
   during it or in the frame after. **(templated)**
 - **The runner itself must not allocate while a test measures allocations.** `await` allocates; race the test against
-  a single timer instead of polling per frame. **(templated)**
+  a single timer instead of polling per frame. Make it a real-time one (`Task.Delay`): the tests run at `--fixed-fps`,
+  where a `SceneTreeTimer` counts game time and a 10 s timeout fires within milliseconds. **(templated)**
 - **The 0 B/frame rule needs a test, not an overlay.** The debug overlay sampled at 4 Hz and missed a string formatted
   on every kill; the first runtime test caught it. Fix: pre-build counter texts at load. **(templated: an allocation
   test per screen)**
